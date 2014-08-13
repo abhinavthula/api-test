@@ -14,13 +14,16 @@
 		"api",
 		"markdown"
 	],
-	"dependencies": {},
+	"dependencies": {
+		"mocha": "^1.21.4",
+		"should": "^4.0.4"
+	},
 	"license": "MIT",
 	"engines": {
 		"node": ">=0.10"
 	},
 	"scripts": {
-		"test": "mocha test"
+		"test": "mocha test --require should"
 	},
 	"devDependencies": {
 		"mocha": "^1.21.4",

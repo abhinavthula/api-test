@@ -28,18 +28,20 @@
  */
 'use strict'
 
+var Test = require('./Test'),
+	Obj = require('./Obj'),
+	Doc = require('./Doc'),
+	Case = require('./Case')
+
 /**
  * @param {string} text
- * @returns {{name: string, db: {name: string, collection: string, doc: Object}[], cases: {name: string, in: Object, out: Object}[]}}
+ * @returns {Test}
  * @throws if the syntax is invalid
  */
 module.exports = function (text) {
 	// Each element is an object 
 	var lines = [],
-		test = {
-			db: [],
-			cases: []
-		},
+		test = new Test,
 		i
 
 	text.split(/\r?\n/).forEach(function (line) {
@@ -56,16 +58,16 @@ module.exports = function (text) {
 	})
 
 	// Header
-	if (!(lines[0] instanceof Header) || lines[0].level !== 1) {
+	if (!checkHeader(lines[0], 1)) {
 		throw new Error('The first line must be a header')
 	}
 	test.name = lines[0].value
 
 	// Fixup
 	i = 2
-	if (lines[1] instanceof Header && lines[1].level === 2 && lines[1].value === 'DB') {
+	if (checkHeader(lines[1], 2, 'DB')) {
 		while (i < lines.length) {
-			if (lines[i] instanceof Header && lines[i].level === 2) {
+			if (checkHeader(lines[i], 2)) {
 				break
 			}
 
@@ -78,8 +80,6 @@ module.exports = function (text) {
 		parseCase(test, lines[i], lines[i + 1], lines[i + 2], lines[i + 3], lines[i + 4])
 		i += 5
 	}
-
-	console.log(JSON.stringify(test, null, '  '))
 
 	return test
 }
@@ -98,11 +98,7 @@ function parseInsertion(test, line1, line2) {
 		throw new Error('The first line of a DB insertion must be "### _docName_ in _collection_"')
 	}
 
-	test.db.push({
-		name: match[1],
-		collection: match[2],
-		doc: line2.getSimpleDoc()
-	})
+	test.docs.push(new Doc(match[1], match[2], line2.toObject()))
 }
 
 /**
@@ -122,11 +118,7 @@ function parseCase(test, line1, line2, line3, line4, line5) {
 		throw new Error('The fifth line of a test case must be an {obj}')
 	}
 
-	test.cases.push({
-		name: line1.value,
-		'in': line3.getSimpleDoc(),
-		out: line5
-	})
+	test.cases.push(new Case(line1.value, line3.toObject(), line5.value))
 }
 
 /**
@@ -147,73 +139,4 @@ function checkHeader(x, level, value) {
 function Header(line) {
 	this.level = line.match(/^#+/)[0].length
 	this.value = line.substr(this.level).trim()
-}
-
-/**
- * @class
- */
-function Obj() {
-	this.value = Object.create(null)
-	this.propsByLevel = []
-}
-
-/**
- * @param {string} line must start with '\t'
- */
-Obj.prototype.push = function (line) {
-	var level = line.match(/^\t+/)[0].length,
-		i, target, match
-	line = line.substr(level).trim()
-	if (line.match(/^[a-z_][a-z0-9_]*$/i)) {
-		// Key
-		// TODO: avoid jumps
-		this.propsByLevel[level] = line
-		target = this.value
-		for (i = 1; i < level; i++) {
-			target = target[this.propsByLevel[i]]
-		}
-		target[line] = Object.create(null)
-	} else if ((match = line.match(/^([a-z_][a-z0-9_]*)\s*([:~])\s*(.*)$/i))) {
-		// Property
-		target = this.value
-		for (i = 1; i < level; i++) {
-			target = target[this.propsByLevel[i]]
-		}
-		target[match[1]] = new ObjValue(match[2] === '~', match[3])
-	} else {
-		throw new Error('Invalid line for {obj}: ' + line)
-	}
-}
-
-/**
- * If the object doesn't have any typed field, return an only fields and values
- * @throws if there is any typed field
- * @returns {Object}
- */
-Obj.prototype.getSimpleDoc = function () {
-	var forEach = function (value) {
-		var key
-		for (key in value) {
-			if (value[key] instanceof ObjValue) {
-				if (value[key].isType) {
-					throw new Error('A document property must be a value')
-				}
-				value[key] = value[key].value
-			} else {
-				forEach(value[key])
-			}
-		}
-	}
-	forEach(this.value)
-	return this.value
-}
-
-/**
- * @class
- * @param {boolean} isType If the value should be considered as a type check
- * @param {*} value
- */
-function ObjValue(isType, value) {
-	this.isType = isType
-	this.value = value
 }
