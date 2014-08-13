@@ -3,12 +3,10 @@
 /**
  * @class
  * @property {string} name
- * @property {string} collection
  * @property {Object} value
  */
-function Doc(name, collection, value) {
+function Doc(name, value) {
 	this.name = name
-	this.collection = collection
 	this.value = value
 }
 

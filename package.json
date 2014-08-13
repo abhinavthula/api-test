@@ -1,32 +1,35 @@
 {
-	"name": "api-test",
-	"version": "0.0.1",
-	"author": "Sitegui <sitegui@sitegui.com.br>",
-	"description": "API testing made simple",
-	"main": "./index.js",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/clubedaentrega/api-test"
-	},
-	"keywords": [
-		"test",
-		"mocha",
-		"api",
-		"markdown"
-	],
-	"dependencies": {
-		"mocha": "^1.21.4",
-		"should": "^4.0.4"
-	},
-	"license": "MIT",
-	"engines": {
-		"node": ">=0.10"
-	},
-	"scripts": {
-		"test": "mocha test --require should"
-	},
-	"devDependencies": {
-		"mocha": "^1.21.4",
-		"should": "^4.0.4"
-	}
+  "name": "api-test",
+  "version": "0.0.1",
+  "author": "Sitegui <sitegui@sitegui.com.br>",
+  "description": "API testing made simple",
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clubedaentrega/api-test"
+  },
+  "keywords": [
+    "test",
+    "mocha",
+    "api",
+    "markdown"
+  ],
+  "dependencies": {
+    "async": "^0.9.0",
+    "mocha": "^1.21.4",
+    "request": "^2.40.0",
+    "should": "^4.0.4"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10"
+  },
+  "scripts": {
+    "test": "mocha test --require should"
+  },
+  "devDependencies": {
+    "mocha": "^1.21.4",
+    "mongoose": "^3.8.14",
+    "should": "^4.0.4"
+  }
 }

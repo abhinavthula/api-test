@@ -18,7 +18,7 @@
  * {fixup} = '## DB' / {insertion}*
  * {test} = '## ' _caseName_ / '### In' / {obj} / '### Out' / {obj}
  *
- * {insertion} = '### ' _docName_ ' in ' _collection_ / {obj}
+ * {insertion} = '### ' _model_ _docName_ / {obj}
  * {obj} = '\t' ({subobj} | <prop>)
  *
  * {subobj} = _key_ / '\t' {obj}
@@ -91,14 +91,17 @@ module.exports = function (text) {
 function parseInsertion(test, line1, line2) {
 	var match
 	if (!checkHeader(line1, 3)) {
-		throw new Error('The first line of a DB insertion must be "### _docName_ in _collection_"')
+		throw new Error('The first line of a DB insertion must be "### _model_ _docName_"')
 	} else if (!(line2 instanceof Obj)) {
 		throw new Error('The second part of a DB insertion must be an {obj}')
-	} else if (!(match = line1.value.match(/^([a-z_][a-z0-9_]*) in ([a-z_][a-z0-9_]*)$/i))) {
-		throw new Error('The first line of a DB insertion must be "### _docName_ in _collection_"')
+	} else if (!(match = line1.value.match(/^([a-z_][a-z0-9_]*) ([a-z_][a-z0-9_]*)$/i))) {
+		throw new Error('The first line of a DB insertion must be "### _model_ _docName_"')
 	}
 
-	test.docs.push(new Doc(match[1], match[2], line2.toObject()))
+	if (!(match[1] in test.inserts)) {
+		test.inserts[match[1]] = []
+	}
+	test.inserts[match[1]].push(new Doc(match[2], line2.toObject()))
 }
 
 /**

@@ -3,12 +3,12 @@
 /**
  * @class
  * @property {string} name
- * @property {Doc[]} docs
+ * @property {Object.<String, Doc[]>} inserts documents to insert by model name
  * @property {Case[]} cases
  */
 function Test() {
 	this.name = ''
-	this.docs = []
+	this.inserts = Object.create(null)
 	this.cases = []
 }
 
