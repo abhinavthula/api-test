@@ -3,13 +3,15 @@
 /**
  * @class
  * @property {string} name
- * @property {Object} in
- * @property {Object} out
+ * @property {Obj} post
+ * @property {Obj} out
+ * @property {Find[]} finds
  */
-function Case(name, _in, out) {
+function Case(name, post, out) {
 	this.name = name
-	this.in = _in
+	this.post = post
 	this.out = out
+	this.finds = []
 }
 
 module.exports = Case
