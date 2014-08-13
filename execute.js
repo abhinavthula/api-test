@@ -2,11 +2,16 @@
 
 function __exec(value, context) {
 	'use strict'
-	var key, r = Object.create(null)
-	for (key in value) {
-		r[key] = typeof value[key] === 'string' ? __eval(value[key], context) : __exec(value[key], context)
+	var key, r
+	if (typeof value === 'string') {
+		return __eval(value, context)
+	} else {
+		r = Object.create(null)
+		for (key in value) {
+			r[key] = __exec(value[key], context)
+		}
+		return r
 	}
-	return r
 }
 
 function __eval(__str, __context) {

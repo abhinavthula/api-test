@@ -3,21 +3,25 @@
 ## DB
 
 ### Item myItem
-	category: randomId()
+	category
+		_id: randomId()
 	basicInfo
 		pt_br
 			description: 'My Great Item'
 			language: 'pt_br'
 			name: 'My Item'
-	choicesFlow: randomId()
+	choicesFlow
+		_id: randomId()
 	image: 'image-url'
 	price: 3.14
 	available: true
-	enterpriseItem: randomId()
+	enterpriseItem
+		_id: randomId()
 
 ### Item myItem2
 	category: myItem.category
-	choicesFlow: randomId()
+	choicesFlow
+		_id: randomId()
 
 ## Item not found
 
@@ -41,4 +45,4 @@
 	image: myItem.image
 	price: myItem.price
 	category
-		id: myItem.category._id
+		id: myItem.category

@@ -3,10 +3,13 @@
  */
 'use strict'
 
+require('should')
+
 var async = require('async'),
 	baseContext = require('./utils'),
 	request = require('request'),
-	execute = require('./execute')
+	execute = require('./execute'),
+	check = require('./check')
 
 /**
  * Run a given test case
@@ -25,11 +28,11 @@ module.exports = function (test, mongoose, describe, before, it, baseUrl, contex
 		before(function (done) {
 			async.each(Object.keys(test.inserts), function (modelName, done) {
 				// Clear and insert
-				var model = mongoose.model(modelName)
+				var Model = mongoose.model(modelName)
 
 				async.series([
-					getClear(model),
-					getInsert(model, test.inserts[modelName], context)
+					getClear(Model),
+					getInsert(Model, test.inserts[modelName], context)
 				], done)
 			}, done)
 		})
@@ -42,8 +45,13 @@ module.exports = function (test, mongoose, describe, before, it, baseUrl, contex
 					url: baseUrl + test.name,
 					method: 'POST',
 					json: json
-				}, function (err, _, body) {
-					console.log(err, body)
+				}, function (err, res, body) {
+					if (err) {
+						return done(err)
+					}
+					res.statusCode.should.be.equal(200)
+					console.log(body)
+					check(body, testCase.out, context)
 					done()
 				})
 			})
@@ -51,25 +59,20 @@ module.exports = function (test, mongoose, describe, before, it, baseUrl, contex
 	})
 }
 
-function getClear(model) {
+function getClear(Model) {
 	return function (done) {
-		model.remove({}, done)
+		Model.remove({}, done)
 	}
 }
 
-function getInsert(model, docs, context) {
+function getInsert(Model, docs, context) {
 	return function (done) {
-		model.create(docs.map(function (doc) {
-			return (context[doc.name] = execute(doc.value, context))
-		}), function (err) {
-			if (err) {
-				return done(err)
-			}
-			var i
-			for (i = 0; i < docs.length; i++) {
-				context[docs[i].name] = arguments[i + 1]
-			}
-			done()
+		docs = docs.map(function (doc) {
+			// Create each document
+			return (context[doc.name] = new Model(execute(doc.value, context)))
 		})
+		async.each(docs, function (doc, done) {
+			doc.save(done)
+		}, done)
 	}
 }

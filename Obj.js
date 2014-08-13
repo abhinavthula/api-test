@@ -71,3 +71,5 @@ function ObjValue(isType, value) {
 }
 
 module.exports = Obj
+
+module.exports.ObjValue = ObjValue
