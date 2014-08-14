@@ -2,10 +2,15 @@
 
 /**
  * @class
+ * @param {number} sourceLine
  */
-function Obj() {
+function Obj(sourceLine) {
 	// The inner value, either a hash map or a string
 	this.value = Object.create(null)
+	this.source = {
+		begin: sourceLine,
+		end: sourceLine
+	}
 	// Store the last prop name for each level
 	this._lastProps = []
 	this._lastLevel = 0
@@ -50,6 +55,7 @@ Obj.prototype.push = function (line) {
 		throw new Error('Invalid line for {obj}: ' + line)
 	}
 	this._empty = false
+	this.source.end++
 }
 
 module.exports = Obj

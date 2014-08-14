@@ -44,53 +44,72 @@ var Test = require('./Test'),
 module.exports = function (text) {
 	// Each element is an object 
 	var lines = [],
+		originalLines = text.split(/\r?\n/),
 		test = new Test,
-		i
+		i, line
 
-	// Tokenizer
-	text.split(/\r?\n/).forEach(function (line) {
-		if (line[0] === '#') {
-			// Header line
-			lines.push(new Header(line))
-		} else if (line[0] === '\t') {
-			// Object line
-			if (!(lines[lines.length - 1] instanceof Obj)) {
-				lines.push(new Obj(line))
+	try {
+		// Lexical parsing (put tokens into lines array)
+		for (i = 0; i < originalLines.length; i++) {
+			line = originalLines[i]
+			if (line[0] === '#') {
+				// Header line
+				lines.push(new Header(line, i))
+			} else if (line[0] === '\t') {
+				// Object line
+				if (!(lines[lines.length - 1] instanceof Obj)) {
+					lines.push(new Obj(i))
+				}
+				lines[lines.length - 1].push(line)
 			}
-			lines[lines.length - 1].push(line)
 		}
-	})
+	} catch (e) {
+		// Add source code info
+		e.message += getSourceContext(originalLines, i)
+		throw e
+	}
+
+	// Syntax parsing (parse tokens from lines array)
+	i = 0
 
 	// Header
-	if (!checkHeader(lines[0], 1)) {
-		throw new Error('The first line must be a header')
-	}
-	test.name = lines[0].value
+	i = parseHeader(test, lines, i, originalLines)
 
 	// Fixup
-	i = 1
 	if (checkHeader(lines[i], 2, 'DB')) {
-		i = 2
+		i++
 		while (i < lines.length && !checkHeader(lines[i], 2)) {
-			i = parseDBItem(test, lines, i)
+			i = parseDBItem(test, lines, i, originalLines)
 		}
 	}
 
 	while (i < lines.length) {
-		i = parseCase(test, lines, i)
+		i = parseCase(test, lines, i, originalLines)
 	}
 
 	return test
 }
 
 /**
+ * Try to parse the test header
+ * @throws if the syntax is invalid
+ */
+function parseHeader(test, lines, i, originalLines) {
+	if (!checkHeader(lines[i], 1)) {
+		throwSyntaxError('Expected a header', lines[i], originalLines)
+	}
+	test.name = lines[i].value
+	return i + 1
+}
+
+/**
  * Try to parse a DB insertion/clear
  * @throws if the syntax is invalid
  */
-function parseDBItem(test, lines, i) {
+function parseDBItem(test, lines, i, originalLines) {
 	var match
 	if (!checkHeader(lines[i], 3)) {
-		throw new Error('The first line of a DB insertion/clear must be "### ..."')
+		throwSyntaxError('Expected "### ..."', lines[i], originalLines)
 	}
 
 	if ((match = lines[i].value.match(/^Clear ([a-z_$][a-z0-9_$]*)$/))) {
@@ -98,12 +117,12 @@ function parseDBItem(test, lines, i) {
 		return i + 1
 	} else if ((match = lines[i].value.match(/^([a-z_$][a-z0-9_$]*) in ([a-z_$][a-z0-9_$]*)$/i))) {
 		if (!(lines[i + 1] instanceof Obj)) {
-			throw new Error('The second part of a DB insertion must be an {obj}')
+			throwSyntaxError('Expected an {obj}', lines[i + 1], originalLines)
 		}
 		test.insertions.push(new Insertion(match[1], match[2], lines[i + 1].value))
 		return i + 2
 	} else {
-		throw new Error('The first line of a DB insertion/clear must be either "### _docName_ in _collection_" or "### Clear _collection_"')
+		throwSyntaxError('Expected either "### _docName_ in _collection_" or "### Clear _collection_"', lines[i], originalLines)
 	}
 }
 
@@ -111,17 +130,17 @@ function parseDBItem(test, lines, i) {
  * Try to parse a test case
  * @throws if the syntax is invalid
  */
-function parseCase(test, lines, i) {
+function parseCase(test, lines, i, originalLines) {
 	if (!checkHeader(lines[i], 2)) {
-		throw new Error('The first line of a test case must be "## _caseName_"')
+		throwSyntaxError('Expected "## _caseName_"', lines[i], originalLines)
 	} else if (!checkHeader(lines[i + 1], 3, 'Post')) {
-		throw new Error('The second line of a test case must be "### Post"')
+		throwSyntaxError('Expected "### Post"', lines[i + 1], originalLines)
 	} else if (!(lines[i + 2] instanceof Obj)) {
-		throw new Error('The third line of a test case must be an {obj}')
+		throwSyntaxError('Expected an {obj}', lines[i + 2], originalLines)
 	} else if (!checkHeader(lines[i + 3], 3, 'Out')) {
-		throw new Error('The fourth line of a test case must be "### Out"')
+		throwSyntaxError('Expected "### Out"', lines[i + 3], originalLines)
 	} else if (!(lines[i + 4] instanceof Obj)) {
-		throw new Error('The fifth line of a test case must be an {obj}')
+		throwSyntaxError('Expected an {obj}', lines[i + 4], originalLines)
 	}
 
 	var testCase = new Case(lines[i].value, lines[i + 2].value, lines[i + 4].value)
@@ -130,9 +149,9 @@ function parseCase(test, lines, i) {
 
 	while (i < lines.length && !checkHeader(lines[i], 2)) {
 		if (!checkHeader(lines[i], 3) || lines[i].value.indexOf('Find in ') !== 0) {
-			throw new Error('The first line of a find must be "### Find in _collection_"')
+			throwSyntaxError('Expected "### Find in _collection_"', lines[i], originalLines)
 		} else if (!(lines[i + 1] instanceof Obj)) {
-			throw new Error('The second line of a find must be an {obj}')
+			throwSyntaxError('Expected an {obj}', lines[i + 1], originalLines)
 		}
 		testCase.finds.push(new Find(lines[i].value.substr(8).trim(), lines[i + 1].value))
 		i += 2
@@ -155,8 +174,39 @@ function checkHeader(x, level, value) {
 /**
  * @class
  * @param {string} line must start with '#'
+ * @param {number} sourceLine
  */
-function Header(line) {
+function Header(line, sourceLine) {
 	this.level = line.match(/^#+/)[0].length
 	this.value = line.substr(this.level).trim()
+	this.source = {
+		begin: sourceLine,
+		end: sourceLine + 1
+	}
+}
+
+/**
+ * @param {string[]} originalLines
+ * @param {number} start
+ * @param {number} [end=start+1]
+ * @param {number} [context=3]
+ */
+function getSourceContext(originalLines, start, end, context) {
+	end = end || start + 1
+	context = context || 3
+
+	var i, str = '\n\n-----'
+	for (i = Math.max(0, start - context); i < end + context && i < originalLines.length; i++) {
+		str += '\n' + (i >= start && i < end ? '>' : ' ') + ' ' + originalLines[i]
+	}
+	return str + '\n-----'
+}
+
+/**
+ * @param {string} msg
+ * @param {(Header|Obj)} token
+ * @param {string[]} originalLines
+ */
+function throwSyntaxError(msg, token, originalLines) {
+	throw new Error(msg + getSourceContext(originalLines, token.source.begin, token.source.end))
 }

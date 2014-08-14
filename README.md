@@ -104,19 +104,24 @@ user:
 * `randomId()`: return a random mongo-id as a 24-hex-char string
 * `randomStr(len)`: return a random string with length `len`
 * `empty`: the empty object `{}`
-* `post`: the request body
-* `out`: the response body
-* `prev`: and object wity keys:
+* `post`: the request body of the current test case
+* `out`: the response body of the current test case
+* `prev`: an object wity keys:
 	* `post`: the request body of the previous request
 	* `out`: the response body of the previous request
 
 ## Options
-* `mongoUri`: the mongo uri to connect to. The hostname SHOULD be 'localhost' and the db name SHOULD contain 'test' in the name. If not, the code will ask for confirmation. This protects one from dropping production data, since the tests automatically clear collections, before inserting docs.
+* `mongoUri`: the mongo uri to connect to. The hostname SHOULD be 'localhost' and the db name SHOULD contains 'test'. If not, the code will ask for confirmation. This protects one from dropping production data, since the tests automatically clear collections, before inserting docs.
 * `baseUrl`: the base API url. Every request url will be composed from this base and the test name.
 * `describe`, `it`, `before`: (optional) the mocha interface. Defaults to global mocha functions
-* `context`: (optional) define your own variables/functions to help writing tests.
+* `context`: (optional) define your own variables/functions accessible from object definitions, to help writing tests.
+
+## Examples
+See more test examples in the folder 'test/api-test'
+
+## Run test
+Run `node index` in 'test/api' to start the a simple API webservice. Then (in another terminal instance), run `npm test` in the project root folder.
 
 ## Road map
 * Array notation: there is no way to declare an array yet
-* Better parsing error feedback
 * Better failure message
