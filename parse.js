@@ -15,10 +15,11 @@
  * {file} = <header> / {fixup}? / {test}+
  *
  * <header> = '# ' _testName_
- * {fixup} = '## DB' / {insertion}*
+ * {fixup} = '## DB' / ({insertion} | {clear})*
  * {test} = '## ' _caseName_ / '### Post' / {obj} / '### Out' / {obj} / {find}*
  *
  * {insertion} = '### ' _docName_ ' in ' _collection_ / {obj}
+ * {clear} = '### Clear ' _collection_
  * {obj} = '\t' (_value_ | {subobj} | <prop>)
  * {find} = '### Find in ' _collection_ / {obj}
  *
@@ -67,14 +68,11 @@ module.exports = function (text) {
 	test.name = lines[0].value
 
 	// Fixup
-	i = 2
-	if (checkHeader(lines[1], 2, 'DB')) {
-		while (i < lines.length) {
-			if (checkHeader(lines[i], 2)) {
-				break
-			}
-
-			i = parseInsertion(test, lines, i)
+	i = 1
+	if (checkHeader(lines[i], 2, 'DB')) {
+		i = 2
+		while (i < lines.length && !checkHeader(lines[i], 2)) {
+			i = parseDBItem(test, lines, i)
 		}
 	}
 
@@ -86,22 +84,27 @@ module.exports = function (text) {
 }
 
 /**
- * Try to parse a DB insertion
+ * Try to parse a DB insertion/clear
  * @throws if the syntax is invalid
  */
-function parseInsertion(test, lines, i) {
+function parseDBItem(test, lines, i) {
 	var match
 	if (!checkHeader(lines[i], 3)) {
-		throw new Error('The first line of a DB insertion must be "### _docName_ in _collection_"')
-	} else if (!(lines[i + 1] instanceof Obj)) {
-		throw new Error('The second part of a DB insertion must be an {obj}')
-	} else if (!(match = lines[i].value.match(/^([a-z_$][a-z0-9_$]*) in ([a-z_$][a-z0-9_$]*)$/i))) {
-		throw new Error('The first line of a DB insertion must be "### _docName_ in _collection_"')
+		throw new Error('The first line of a DB insertion/clear must be "### ..."')
 	}
 
-	test.insertions.push(new Insertion(match[1], match[2], lines[i + 1].value))
-
-	return i + 2
+	if ((match = lines[i].value.match(/^Clear ([a-z_$][a-z0-9_$]*)$/))) {
+		test.insertions.push(new Insertion('', match[1]))
+		return i + 1
+	} else if ((match = lines[i].value.match(/^([a-z_$][a-z0-9_$]*) in ([a-z_$][a-z0-9_$]*)$/i))) {
+		if (!(lines[i + 1] instanceof Obj)) {
+			throw new Error('The second part of a DB insertion must be an {obj}')
+		}
+		test.insertions.push(new Insertion(match[1], match[2], lines[i + 1].value))
+		return i + 2
+	} else {
+		throw new Error('The first line of a DB insertion/clear must be either "### _docName_ in _collection_" or "### Clear _collection_"')
+	}
 }
 
 /**
@@ -121,7 +124,7 @@ function parseCase(test, lines, i) {
 		throw new Error('The fifth line of a test case must be an {obj}')
 	}
 
-	var testCase = new Case(lines[i].value, lines[i + 2], lines[i + 4])
+	var testCase = new Case(lines[i].value, lines[i + 2].value, lines[i + 4].value)
 	test.cases.push(testCase)
 	i += 5
 
@@ -131,7 +134,7 @@ function parseCase(test, lines, i) {
 		} else if (!(lines[i + 1] instanceof Obj)) {
 			throw new Error('The second line of a find must be an {obj}')
 		}
-		testCase.finds.push(new Find(lines[i].value.substr(8).trim(), lines[i + 1]))
+		testCase.finds.push(new Find(lines[i].value.substr(8).trim(), lines[i + 1].value))
 		i += 2
 	}
 

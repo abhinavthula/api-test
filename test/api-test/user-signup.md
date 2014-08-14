@@ -1,5 +1,8 @@
 # user/signup
 
+## DB
+### Clear users
+
 ## Invalid username
 ### Post
 	user:
@@ -34,7 +37,7 @@
 	token: out.token
 
 ## Using the same username again
-### In
+### Post
 	prev.post
 ### Out
 	error:

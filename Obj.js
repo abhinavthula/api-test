@@ -6,6 +6,7 @@
 function Obj() {
 	this.value = Object.create(null)
 	this.propsByLevel = []
+	this.lines = 0
 }
 
 /**
@@ -16,7 +17,9 @@ Obj.prototype.push = function (line) {
 	var level = line.match(/^\t+/)[0].length,
 		i, target, match
 	line = line.substr(level).trim()
-	if (line.match(/^[a-z_$][a-z0-9_$]*:$/i)) {
+	if (typeof this.value === 'string') {
+		throw new Error('Invalid line for {obj}: ' + line)
+	} else if (line.match(/^[a-z_$][a-z0-9_$]*:$/i)) {
 		// Key
 		// TODO: avoid jumps
 		line = line.substr(0, line.length - 1)
@@ -33,9 +36,12 @@ Obj.prototype.push = function (line) {
 			target = target[this.propsByLevel[i]]
 		}
 		target[match[1]] = match[2]
+	} else if (this.lines === 0) {
+		this.value = line
 	} else {
 		throw new Error('Invalid line for {obj}: ' + line)
 	}
+	this.lines++
 }
 
 module.exports = Obj

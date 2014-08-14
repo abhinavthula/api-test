@@ -3,7 +3,7 @@
 /**
  * @class
  * @property {string} collection
- * @property {Obj} value
+ * @property {Object} value
  */
 function Find(collection, value) {
 	this.collection = collection

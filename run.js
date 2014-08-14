@@ -7,9 +7,6 @@ require('should')
 
 var async = require('async'),
 	baseContext = require('./utils'),
-	request = require('request'),
-	execute = require('./execute'),
-	check = require('./check'),
 	MongoClient = require('mongodb').MongoClient
 
 /**
@@ -43,7 +40,7 @@ module.exports = function (test, mongoUri, describe, before, it, baseUrl, contex
 
 		test.cases.forEach(function (testCase) {
 			it(testCase.name, function (done) {
-				testCase.execute(done)
+				testCase.execute(baseUrl + test.name, context, done)
 			})
 		})
 	})

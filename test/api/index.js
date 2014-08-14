@@ -11,13 +11,15 @@ mongoose.connect('mongodb://localhost:27017/api_test')
 var User = mongoose.model('user', new mongoose.Schema({
 	name: {
 		type: String,
-		unique: true
+		index: {
+			unique: true
+		}
 	},
 	password: String,
 	token: String
 }))
 
-app.use(require('body-parser').json(), function (req, res) {
+app.use(require('body-parser').json(), function (req, res, next) {
 	req.body = req.body || {}
 	res.success = function (obj) {
 		obj = obj || {}
@@ -36,13 +38,17 @@ app.use(require('body-parser').json(), function (req, res) {
 				message: message || ''
 			}
 		}
-		res.json(error)
+		res.json({
+			error: error
+		})
 	}
+	next()
 })
 
 app.post('/user/signup', function (req, res) {
-	var name = req.body.name || '',
-		password = req.body.password || ''
+	var user = req.body.user || {},
+		name = user.name || '',
+		password = user.password || ''
 
 	if (!name) {
 		return res.error(200, 'The name can not be empty')
@@ -67,8 +73,9 @@ app.post('/user/signup', function (req, res) {
 })
 
 app.post('/user/login', function (req, res) {
-	var name = req.body.name || '',
-		password = req.body.password || ''
+	var user = req.body.user || {},
+		name = user.name || '',
+		password = user.password || ''
 
 	User.findOneAndUpdate({
 		name: name,

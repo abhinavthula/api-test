@@ -2,23 +2,20 @@
 
 require('should')
 
-var execute = require('./execute'),
-	ObjValue = require('./Obj').ObjValue
+var types = [String, Number, Boolean, Object, Array]
 
-module.exports = function (obj, definition, context) {
+module.exports = function (actual, expected) {
+	console.log(actual, expected)
 	var key, field
-	for (key in definition) {
-		field = definition[key]
-		if (field instanceof ObjValue) {
-			if (field.isType) {
-				console.log('type', field.value)
-			} else {
-				console.log('value', field.value)
-				obj.should.have.property(key, execute(field.value, context))
-			}
+	for (key in expected) {
+		field = expected[key]
+		if (types.indexOf(field) !== -1) {
+			actual.should.have.a.property(key).and.be.a[field.name]
+		} else if (field && typeof field === 'object' && (field.constructor === Object || Object.getPrototypeOf(field) === null)) {
+			actual.should.have.a.property(key).and.be.an.Object
+			module.exports(actual[key], expected[key])
 		} else {
-			obj.should.have.property(key).and.should.be.Object
-			module.exports(obj[key], field, context)
+			actual.should.have.a.property(key).and.be.eql(field)
 		}
 	}
 }

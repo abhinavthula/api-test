@@ -3,10 +3,11 @@
 var execute = require('./execute')
 
 /**
+ * Represents either a DB insertion or clearing
  * @class
- * @property {string} name
+ * @property {string} name empty string if it's a clear command
  * @property {string} collection
- * @property {Object} value
+ * @property {Object} [value]
  */
 function Insertion(name, collection, value) {
 	this.name = name
@@ -24,30 +25,28 @@ function Insertion(name, collection, value) {
 Insertion.prototype.execute = function (db, cleared, context, done) {
 	var that = this
 
-	if (cleared.indexOf(this.collection) === -1) {
+	if (!this.name || cleared.indexOf(this.collection) === -1) {
 		// Clear the collection first
-		return db.collection(this.collection).drop(function (err) {
+		return db.collection(this.collection).remove({}, {
+			w: 1
+		}, function (err) {
 			if (err) {
 				return done(err)
 			}
 			cleared.push(that.collection)
-			that.execute(db, cleared, context, done)
+			if (that.name) {
+				that.execute(db, cleared, context, done)
+			} else {
+				done()
+			}
 		})
 	}
 
 	// Prepare the document
-	var doc = execute(this.value, context)
-	db.collection(this.collection).insert(doc, {
+	context[that.name] = execute(this.value, context)
+	db.collection(this.collection).insert(context[that.name], {
 		w: 1
-	}, function (err, doc) {
-		if (err) {
-			return done(err)
-		}
-
-		// Save
-		context[that.name] = doc
-		done()
-	})
+	}, done)
 }
 
 module.exports = Insertion
