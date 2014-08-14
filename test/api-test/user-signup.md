@@ -14,6 +14,9 @@
 		message: String
 
 ## Invalid password
+
+The password must have at least 5 chars
+
 ### Post
 	user:
 		name: 'Guilherme'
