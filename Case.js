@@ -2,7 +2,8 @@
 
 var request = require('request'),
 	execute = require('./execute'),
-	check = require('./check')
+	check = require('./check'),
+	async = require('async')
 
 /**
  * @class
@@ -18,24 +19,25 @@ function Case(name, post, out) {
 	this.finds = []
 }
 
-Case.prototype.execute = function (url, context, done) {
-	var json = execute(this.post, context),
+Case.prototype.execute = function (url, context, db, done) {
+	var post = execute(this.post, context),
 		that = this
+	context.post = post
 	request({
 		url: url,
 		method: 'POST',
-		json: json
-	}, function (err, res, body) {
+		json: post
+	}, function (err, res, out) {
 		if (err) {
 			return done(err)
 		}
+		context.out = out
+
 		res.statusCode.should.be.equal(200)
-		check(body, execute(that.out, context))
-		context.prev = {
-			post: json,
-			out: body
-		}
-		done()
+		check(out, execute(that.out, context))
+		async.each(that.finds, function (find, done) {
+			find.execute(context, db, done)
+		}, done)
 	})
 }
 

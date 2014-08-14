@@ -5,7 +5,6 @@ require('should')
 var types = [String, Number, Boolean, Object, Array]
 
 module.exports = function (actual, expected) {
-	console.log(actual, expected)
 	var key, field
 	for (key in expected) {
 		field = expected[key]
