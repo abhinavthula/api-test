@@ -5,8 +5,6 @@ API testing made simple
 ## Install
 `npm install api-test --save`
 
-**WORKING IN PROGRESS**
-
 ## Usage
 Create a test file 'test/api-test/sample.md' to test the 'item/get' endpoint, like this:
 ```
@@ -62,7 +60,7 @@ The syntax is simply:
 
 At the first insertion in a collection, it will be cleared. This is important to make every test isolated. You may refer to this object by its _docName_.
 
-The syntax for _docDescription_ is described at ## object syntax
+The syntax for _docDescription_ is described at bellow
 
 #### Clearing collections
 The syntax is simply:
@@ -81,4 +79,44 @@ A test case has three sections:
 * `Out`: the expected JSON output. Must start with a header like `### Out`
 * `Finds`: optional DB assertions. Must start with a header like `### Find in _collection_`
 
-In all cases, the syntax is described at ## object syntax
+In all cases, the syntax is described bellow
+
+## Object syntax
+The syntax was designed to be concise and expressive. The values will be eval'ed as normal JS with a context with special variables (see default `context bellow`).
+
+The object can be a simple JS value, like:
+```
+new Date
+```
+
+Or an object with one property by line and tabs used to declare sub-objects:
+```
+user:
+	name:
+		first: 'Happy'
+		last: 'Customer'
+	age: 37 + 2
+	country: 'cm'.toUpperCase()
+```
+
+## Default context
+
+* `randomId()`: return a random mongo-id as a 24-hex-char string
+* `randomStr(len)`: return a random string with length `len`
+* `empty`: the empty object `{}`
+* `post`: the request body
+* `out`: the response body
+* `prev`: and object wity keys:
+	* `post`: the request body of the previous request
+	* `out`: the response body of the previous request
+
+## Options
+* `mongoUri`: the mongo uri to connect to. The hostname SHOULD be 'localhost' and the db name SHOULD contain 'test' in the name. If not, the code will ask for confirmation. This protects one from dropping production data, since the tests automatically clear collections, before inserting docs.
+* `baseUrl`: the base API url. Every request url will be composed from this base and the test name.
+* `describe`, `it`, `before`: (optional) the mocha interface. Defaults to global mocha functions
+* `context`: (optional) define your own variables/functions to help writing tests.
+
+## Road map
+* Array notation: there is no way to declare an array yet
+* Better parsing error feedback
+* Better failure message
