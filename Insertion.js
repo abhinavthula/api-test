@@ -25,7 +25,7 @@ function Insertion(name, collection, value) {
 Insertion.prototype.execute = function (db, cleared, context, done) {
 	var that = this
 
-	if (!this.name || cleared.indexOf(this.collection) === -1) {
+	if (cleared.indexOf(this.collection) === -1) {
 		// Clear the collection first
 		return db.collection(this.collection).remove({}, {
 			w: 1
@@ -40,6 +40,8 @@ Insertion.prototype.execute = function (db, cleared, context, done) {
 				done()
 			}
 		})
+	} else if (!this.name) {
+		done(new Error('The collection ' + this.collection + ' was already cleared'))
 	}
 
 	// Prepare the document
