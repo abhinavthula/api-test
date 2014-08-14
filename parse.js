@@ -190,6 +190,7 @@ function Header(line, sourceLine) {
  * @param {number} start
  * @param {number} [end=start+1]
  * @param {number} [context=3]
+ * @returns {string}
  */
 function getSourceContext(originalLines, start, end, context) {
 	end = end || start + 1
@@ -206,6 +207,7 @@ function getSourceContext(originalLines, start, end, context) {
  * @param {string} msg
  * @param {(Header|Obj)} token
  * @param {string[]} originalLines
+ * @throws
  */
 function throwSyntaxError(msg, token, originalLines) {
 	throw new Error(msg + getSourceContext(originalLines, token.source.begin, token.source.end))
