@@ -13,7 +13,7 @@ function Find(collection, value) {
 }
 
 Find.prototype.execute = function (context, db, done) {
-	var selector = execute(this.value, context),
+	var selector = execute(this.value, context, '<find in ' + this.collection + '>'),
 		that = this
 	db.collection(this.collection).findOne(selector, function (err, doc) {
 		if (err) {

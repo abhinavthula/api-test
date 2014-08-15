@@ -3,7 +3,7 @@
 API testing made simple
 
 ## Install
-`npm install api-test --save`
+`npm install api-test --save-dev`
 
 ## Usage
 Create a test file 'test/api-test/sample.md' to test the 'item/get' endpoint, like this:
@@ -161,7 +161,6 @@ Run `node index` in 'test/api' to start the a simple API webservice. Then (in an
 
 ## TODO
 * Array notation: there is no way to declare an array yet
-* Better failure message
 * Make request to arbitrary endpoints in a test case
 * Assert HTTP status code
 * Make post/out optional

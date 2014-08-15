@@ -20,7 +20,7 @@ function Case(name, post, out) {
 }
 
 Case.prototype.execute = function (url, context, db, done) {
-	var post = execute(this.post, context),
+	var post = execute(this.post, context, '<post>'),
 		that = this
 	context.post = post
 	request({
@@ -34,7 +34,7 @@ Case.prototype.execute = function (url, context, db, done) {
 		context.out = out
 
 		res.statusCode.should.be.equal(200)
-		check(out, execute(that.out, context))
+		check(out, execute(that.out, context, '<out>'))
 		async.each(that.finds, function (find, done) {
 			find.execute(context, db, done)
 		}, done)
