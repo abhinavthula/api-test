@@ -117,7 +117,41 @@ user:
 * `mongoUri`: the mongo uri to connect to. The hostname SHOULD be 'localhost' and the db name SHOULD contains 'test'. If not, the code will ask for confirmation. This protects one from dropping production data, since the tests automatically clear collections, before inserting docs.
 * `baseUrl`: the base API url. Every request url will be composed from this base and the test name.
 * `describe`, `it`, `before`: (optional) the mocha interface. Defaults to global mocha functions
-* `context`: (optional) define your own variables/functions accessible from object definitions, to help writing tests.
+* `context`: (optional) define your own variables/functions accessible to object definitions
+
+## Custom context
+You can use custom context to help writing tests. All default context variables and methods will still be accessible (unless overwritten).
+
+For example: if all endpoints return errors like this: `{error: {code: _code_, message: _aDebugString_}}`, you can pass as context:
+```
+options.context = {
+	error: function (code) {
+		return {
+			error: {
+				code: code,
+				message: String
+			}
+		}
+	}
+}
+```
+
+And then write a test case like this:
+```
+## Invalid email should give error 200
+### Post
+	user:
+		email: randomEmail()
+### Out
+	error(200)
+```
+
+Instead of repeating youself with:
+```
+	error:
+		code: 200
+		message: String
+```
 
 ## Examples
 See more test examples in the folder 'test/api-test'
@@ -125,6 +159,9 @@ See more test examples in the folder 'test/api-test'
 ## Run test
 Run `node index` in 'test/api' to start the a simple API webservice. Then (in another terminal instance), run `npm test` in the project root folder.
 
-## Road map
+## TODO
 * Array notation: there is no way to declare an array yet
 * Better failure message
+* Make request to arbitrary endpoints in a test case
+* Assert HTTP status code
+* Make post/out optional
