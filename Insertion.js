@@ -1,13 +1,14 @@
 'use strict'
 
-var execute = require('./execute')
+var execute = require('./execute'),
+	Clear = require('./Clear')
 
 /**
- * Represents either a DB insertion or clearing
+ * Represents a DB insertion
  * @class
- * @property {string} name empty string if it's a clear command
+ * @property {string} name
  * @property {string} collection
- * @property {Object} [value]
+ * @property {Object} value
  */
 function Insertion(name, collection, value) {
 	this.name = name
@@ -27,21 +28,12 @@ Insertion.prototype.execute = function (db, cleared, context, done) {
 
 	if (cleared.indexOf(this.collection) === -1) {
 		// Clear the collection first
-		return db.collection(this.collection).remove({}, {
-			w: 1
-		}, function (err) {
+		return new Clear(this.collection).execute(db, cleared, context, function (err) {
 			if (err) {
 				return done(err)
 			}
-			cleared.push(that.collection)
-			if (that.name) {
-				that.execute(db, cleared, context, done)
-			} else {
-				done()
-			}
+			that.execute(db, cleared, context, done)
 		})
-	} else if (!this.name) {
-		done(new Error('The collection ' + this.collection + ' was already cleared'))
 	}
 
 	// Prepare the document

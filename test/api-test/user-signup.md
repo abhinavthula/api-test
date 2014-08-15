@@ -1,13 +1,17 @@
 # user/signup
 
-## DB
+## Setup
 ### Clear users
+
+### user is
+	name: 'Guilherme'
+	password: '1234'
 
 ## Invalid username
 ### Post
 	user:
 		name: ''
-		password: '1234'
+		password: user.name
 ### Out
 	error:
 		code: 200
@@ -19,7 +23,7 @@ The password must have at least 5 chars
 
 ### Post
 	user:
-		name: 'Guilherme'
+		name: user.name
 		password: '1'
 ### Out
 	error:
@@ -28,9 +32,7 @@ The password must have at least 5 chars
 
 ## Valid
 ### Post
-	user:
-		name: 'Guilherme'
-		password: '1234'
+	user: user
 ### Out
 	error: null
 	token: String

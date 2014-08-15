@@ -9,7 +9,7 @@ API testing made simple
 Create a test file 'test/api-test/sample.md' to test the 'item/get' endpoint, like this:
 ```
 # item/get
-## DB
+## Setup
 ### item in items
 	name: 'Salad'
 	price: 500
@@ -48,8 +48,8 @@ Markdown was choosen because it's easy to write/read and it's not code!
 ## Test structure
 A test is divided in two parts:
 
-### Database fixup
-This is an optional section called 'DB' that let you insert documents and clear mongo collections to prepare the database before the test cases run.
+### Test setup
+This is an optional section called 'Setuo' that let you insert documents, clear mongo collections to prepare the database before the test cases run.
 
 #### Inserting documents
 The syntax is simply:
@@ -72,6 +72,15 @@ Use this only when you won't insert any document in that collection, but want it
 
 All documents in that collection will be removed, indexes will be kept
 
+#### Declaring variables
+You can declare and define a variable to use in test cases, db insertions and more:
+```
+### _varName_ is
+	_variableContent_
+```
+
+This will make _varName_ available to every following object block.
+
 ### Test cases
 A test case has three optional sections:
 
@@ -82,7 +91,7 @@ A test case has three optional sections:
 In all cases, the syntax is described bellow
 
 ## Object syntax
-The syntax was designed to be concise and expressive. The values will be eval'ed as normal JS with a context with special variables (see default `context bellow`).
+The syntax was designed to be concise and expressive. The values will be eval'ed as normal JS with a context with special variables (see `default context` bellow).
 
 The object can be a simple JS value, like:
 ```
@@ -162,3 +171,5 @@ Run `node index` in 'test/api' to start the a simple API webservice. Then (in an
 ## TODO
 * Array notation: there is no way to declare an array yet
 * Make request to arbitrary endpoints in a test case
+* Mixin
+* Make keys less restrictive

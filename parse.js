@@ -13,14 +13,15 @@
  * * x|y means either x or y
  * * [D] means a digit
  *
- * {file} = <header> / {fixup}? / {test}+
+ * {file} = <header> / {setup}? / {test}+
  *
  * <header> = '# ' _testName_
- * {fixup} = '## DB' / ({insertion} | {clear})*
+ * {setup} = '## Setup' / ({insertion} | {clear} | {declaration})*
  * {test} = '## ' _caseName_ / ('### Post' / {obj})? / {out}? / {find}*
  *
  * {insertion} = '### ' _docName_ ' in ' _collection_ / {obj}
  * {clear} = '### Clear ' _collection_
+ * {declaration} = '### ' _varName_ ' is' / {obj}
  * {obj} = '\t' (_value_ | {subobj} | <prop>)
  * {out} = '### Out' (' ' <statusCode>)? / {obj}
  * {find} = '### Find in ' _collection_ / {obj}
@@ -36,6 +37,8 @@
 var Test = require('./Test'),
 	Obj = require('./Obj'),
 	Insertion = require('./Insertion'),
+	Clear = require('./Clear'),
+	Declaration = require('./Declaration'),
 	Case = require('./Case'),
 	Find = require('./Find')
 
@@ -78,11 +81,11 @@ module.exports = function (text) {
 	// Header
 	i = parseHeader(test, lines, i, originalLines)
 
-	// Fixup
-	if (checkHeader(lines[i], 2, 'DB')) {
+	// Setup
+	if (checkHeader(lines[i], 2, 'Setup')) {
 		i++
 		while (i < lines.length && !checkHeader(lines[i], 2)) {
-			i = parseDBItem(test, lines, i, originalLines)
+			i = parseSetupItem(test, lines, i, originalLines)
 		}
 	}
 
@@ -106,26 +109,32 @@ function parseHeader(test, lines, i, originalLines) {
 }
 
 /**
- * Try to parse a DB insertion/clear
+ * Try to parse a DB insertion/clear or variable declaration
  * @throws if the syntax is invalid
  */
-function parseDBItem(test, lines, i, originalLines) {
+function parseSetupItem(test, lines, i, originalLines) {
 	var match
 	if (!checkHeader(lines[i], 3)) {
 		throwSyntaxError('Expected "### ..."', lines[i], originalLines)
 	}
 
 	if ((match = lines[i].value.match(/^Clear ([a-z_$][a-z0-9_$]*)$/))) {
-		test.insertions.push(new Insertion('', match[1]))
+		test.setups.push(new Clear(match[1]))
 		return i + 1
+	} else if ((match = lines[i].value.match(/^([a-z_$][a-z0-9_$]*) is/i))) {
+		if (!(lines[i + 1] instanceof Obj)) {
+			throwSyntaxError('Expected an {obj}', lines[i + 1], originalLines)
+		}
+		test.setups.push(new Declaration(match[1], lines[i + 1].value))
+		return i + 2
 	} else if ((match = lines[i].value.match(/^([a-z_$][a-z0-9_$]*) in ([a-z_$][a-z0-9_$]*)$/i))) {
 		if (!(lines[i + 1] instanceof Obj)) {
 			throwSyntaxError('Expected an {obj}', lines[i + 1], originalLines)
 		}
-		test.insertions.push(new Insertion(match[1], match[2], lines[i + 1].value))
+		test.setups.push(new Insertion(match[1], match[2], lines[i + 1].value))
 		return i + 2
 	} else {
-		throwSyntaxError('Expected either "### _docName_ in _collection_" or "### Clear _collection_"', lines[i], originalLines)
+		throwSyntaxError('Expected either "### _docName_ in _collection_", "### Clear _collection_" or "### _varName_ is"', lines[i], originalLines)
 	}
 }
 

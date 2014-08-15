@@ -16,12 +16,12 @@ var async = require('async')
  */
 module.exports = function (test, options) {
 	options.describe(test.name, function () {
-		// DB fixup
+		// DB setup
 		options.before(function (done) {
 			// Insert each document
 			var cleared = []
-			async.eachSeries(test.insertions, function (insertion, done) {
-				insertion.execute(options.db, cleared, options.context, done)
+			async.eachSeries(test.setups, function (setup, done) {
+				setup.execute(options.db, cleared, options.context, done)
 			}, done)
 		})
 
@@ -32,6 +32,8 @@ module.exports = function (test, options) {
 					post: options.context.post,
 					out: options.context.out
 				}
+				delete options.context.post
+				delete options.context.out
 				testCase.execute(options.baseUrl + test.name, options.context, options.db, done)
 			})
 		})

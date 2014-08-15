@@ -3,12 +3,12 @@
 /**
  * @class
  * @property {string} name
- * @property {Insertion[]} insertions
+ * @property {Setup[]} setups
  * @property {Case[]} cases
  */
 function Test() {
 	this.name = ''
-	this.insertions = []
+	this.setups = []
 	this.cases = []
 }
 

@@ -1,6 +1,6 @@
 # user/login
 
-## DB
+## Setup
 ### user in users
 	name: 'Guilherme'
 	password: '12345'
