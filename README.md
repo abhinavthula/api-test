@@ -102,7 +102,10 @@ user:
 ## Default context
 
 * `randomId()`: return a random mongo-id as a 24-hex-char string
-* `randomStr(len)`: return a random string with length `len`
+* `randomStr([len=7], [alphabet=a-zA-Z0-9+/])`
+* `randomHex([len=7])`
+* `randomCode([len=7])`
+* `randomEmail([domain='example.com'])`
 * `empty`: the empty object `{}`
 * `post`: the request body of the current test case
 * `out`: the response body of the current test case

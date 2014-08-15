@@ -3,15 +3,61 @@
  */
 'use strict'
 
-var crypto = require('crypto')
+var ObjectID = require('mongodb').ObjectID
 
-module.exports = {
-	randomId: function () {
-		return crypto.pseudoRandomBytes(12).toString('hex')
-	},
-	randomStr: function (len) {
-		len = len || 7
-		return crypto.pseudoRandomBytes(Math.ceil(len * 3 / 4)).toString('base64').substr(0, len)
-	},
-	empty: {}
+/**
+ * Generate a random mongo objectId
+ * @returns {string}
+ */
+module.exports.randomId = function () {
+	return new ObjectID().toHexString()
 }
+
+/**
+ * Generate a random string with base64 chars (A-Za-z0-9+/)
+ * @param {number} [len=7]
+ * @param {string} [alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/']
+ * @returns {string}
+ */
+module.exports.randomStr = function (len, alphabet) {
+	var i, str = ''
+	len = len || 7
+	alphabet = alphabet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+	for (i = 0; i < len; i++) {
+		str += alphabet[Math.floor(Math.random() * alphabet.length)]
+	}
+	return str
+}
+
+/**
+ * Generate a random string with hex chars (0-9a-f)
+ * @param {number} [len=7]
+ * @returns {string}
+ */
+module.exports.randomHex = function (len) {
+	return module.exports.randomStr(len, '0123456789abcdef')
+}
+
+/**
+ * Generate a random string with digits (0-9)
+ * @param {number} [len=7]
+ * @returns {string}
+ */
+module.exports.randomCode = function (len) {
+	return module.exports.randomStr(len, '0123456789')
+}
+
+/**
+ * Generate a random valid email address
+ * @param {string} [domain='example.com']
+ * @returns {string}
+ */
+module.exports.randomEmail = function (domain) {
+	domain = domain || 'example.com'
+	return 'test-' + module.exports.randomId() + '@' + domain
+}
+
+/**
+ * The empty object
+ */
+module.exports.empty = {}
