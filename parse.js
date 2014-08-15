@@ -16,7 +16,7 @@
  *
  * <header> = '# ' _testName_
  * {fixup} = '## DB' / ({insertion} | {clear})*
- * {test} = '## ' _caseName_ / '### Post' / {obj} / '### Out' / {obj} / {find}*
+ * {test} = '## ' _caseName_ / ('### Post' / {obj})? / ('### Out' / {obj})? / {find}*
  *
  * {insertion} = '### ' _docName_ ' in ' _collection_ / {obj}
  * {clear} = '### Clear ' _collection_
@@ -131,22 +131,41 @@ function parseDBItem(test, lines, i, originalLines) {
  * @throws if the syntax is invalid
  */
 function parseCase(test, lines, i, originalLines) {
+	var name, post, out
+
+	// Test case name
 	if (!checkHeader(lines[i], 2)) {
 		throwSyntaxError('Expected "## _caseName_"', lines[i], originalLines)
-	} else if (!checkHeader(lines[i + 1], 3, 'Post')) {
-		throwSyntaxError('Expected "### Post"', lines[i + 1], originalLines)
-	} else if (!(lines[i + 2] instanceof Obj)) {
-		throwSyntaxError('Expected an {obj}', lines[i + 2], originalLines)
-	} else if (!checkHeader(lines[i + 3], 3, 'Out')) {
-		throwSyntaxError('Expected "### Out"', lines[i + 3], originalLines)
-	} else if (!(lines[i + 4] instanceof Obj)) {
-		throwSyntaxError('Expected an {obj}', lines[i + 4], originalLines)
+	}
+	name = lines[i].value
+	i++
+
+	// Post
+	if (checkHeader(lines[i], 3, 'Post')) {
+		if (!(lines[i + 1] instanceof Obj)) {
+			throwSyntaxError('Expected an {obj}', lines[i + 1], originalLines)
+		}
+		post = lines[i + 1].value
+		i += 2
+	} else {
+		post = {}
 	}
 
-	var testCase = new Case(lines[i].value, lines[i + 2].value, lines[i + 4].value)
-	test.cases.push(testCase)
-	i += 5
+	// Out
+	if (checkHeader(lines[i], 3, 'Out')) {
+		if (!(lines[i + 1] instanceof Obj)) {
+			throwSyntaxError('Expected an {obj}', lines[i + 1], originalLines)
+		}
+		out = lines[i + 1].value
+		i += 2
+	} else {
+		out = {}
+	}
 
+	var testCase = new Case(name, post, out)
+	test.cases.push(testCase)
+
+	// Finds
 	while (i < lines.length && !checkHeader(lines[i], 2)) {
 		if (!checkHeader(lines[i], 3) || lines[i].value.indexOf('Find in ') !== 0) {
 			throwSyntaxError('Expected "### Find in _collection_"', lines[i], originalLines)

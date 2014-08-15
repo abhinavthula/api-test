@@ -73,10 +73,10 @@ Use this only when you won't insert any document in that collection, but want it
 All documents in that collection will be removed, indexes will be kept
 
 ### Test cases
-A test case has three sections:
+A test case has three optional sections:
 
-* `Post`: the JSON body to send by POST. Must start with a header like `### Post`
-* `Out`: the expected JSON output. Must start with a header like `### Out`
+* `Post`: the JSON body to send by POST. Must start with a header like `### Post`. Default: empty JSON object `{}`
+* `Out`: the expected JSON output. Must start with a header like `### Out`. Default: no checking
 * `Finds`: optional DB assertions. Must start with a header like `### Find in _collection_`
 
 In all cases, the syntax is described bellow
@@ -163,4 +163,3 @@ Run `node index` in 'test/api' to start the a simple API webservice. Then (in an
 * Array notation: there is no way to declare an array yet
 * Make request to arbitrary endpoints in a test case
 * Assert HTTP status code
-* Make post/out optional
