@@ -11,20 +11,23 @@
  * * x+ means at least once
  * * x* means any number of times
  * * x|y means either x or y
+ * * [D] means a digit
  *
  * {file} = <header> / {fixup}? / {test}+
  *
  * <header> = '# ' _testName_
  * {fixup} = '## DB' / ({insertion} | {clear})*
- * {test} = '## ' _caseName_ / ('### Post' / {obj})? / ('### Out' / {obj})? / {find}*
+ * {test} = '## ' _caseName_ / ('### Post' / {obj})? / {out}? / {find}*
  *
  * {insertion} = '### ' _docName_ ' in ' _collection_ / {obj}
  * {clear} = '### Clear ' _collection_
  * {obj} = '\t' (_value_ | {subobj} | <prop>)
+ * {out} = '### Out' (' ' <statusCode>)? / {obj}
  * {find} = '### Find in ' _collection_ / {obj}
  *
  * {subobj} = _key_ ':' / '\t' {obj}
  * <prop> = _key_ ':' _value_
+ * <statusCode> = [D] [D] [D]
  *
  * Paragraph text is ignored (it can be used for documentation)
  */
@@ -131,7 +134,7 @@ function parseDBItem(test, lines, i, originalLines) {
  * @throws if the syntax is invalid
  */
 function parseCase(test, lines, i, originalLines) {
-	var name, post, out
+	var name, post, out, statusCode
 
 	// Test case name
 	if (!checkHeader(lines[i], 2)) {
@@ -152,17 +155,19 @@ function parseCase(test, lines, i, originalLines) {
 	}
 
 	// Out
-	if (checkHeader(lines[i], 3, 'Out')) {
+	if (checkHeader(lines[i], 3) && lines[i].value.match(/^Out( \d{3})?$/)) {
 		if (!(lines[i + 1] instanceof Obj)) {
 			throwSyntaxError('Expected an {obj}', lines[i + 1], originalLines)
 		}
 		out = lines[i + 1].value
+		statusCode = lines[i].value === 'Out' ? 200 : Number(lines[i].value.substr(4))
 		i += 2
 	} else {
 		out = {}
+		statusCode = 200
 	}
 
-	var testCase = new Case(name, post, out)
+	var testCase = new Case(name, post, out, statusCode)
 	test.cases.push(testCase)
 
 	// Finds

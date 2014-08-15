@@ -16,7 +16,7 @@ Create a test file 'test/api-test/sample.md' to test the 'item/get' endpoint, li
 ## Invalid request
 ### Post
 	randomId()
-### Out
+### Out 400
 	error:
 		code: 200
 ## Valid request
@@ -76,7 +76,7 @@ All documents in that collection will be removed, indexes will be kept
 A test case has three optional sections:
 
 * `Post`: the JSON body to send by POST. Must start with a header like `### Post`. Default: empty JSON object `{}`
-* `Out`: the expected JSON output. Must start with a header like `### Out`. Default: no checking
+* `Out`: the expected JSON output. Must start with a header like `### Out [_statusCode_]`. Default: no output checking. The _statusCode_ is optional and default to 200
 * `Finds`: optional DB assertions. Must start with a header like `### Find in _collection_`
 
 In all cases, the syntax is described bellow
@@ -162,4 +162,3 @@ Run `node index` in 'test/api' to start the a simple API webservice. Then (in an
 ## TODO
 * Array notation: there is no way to declare an array yet
 * Make request to arbitrary endpoints in a test case
-* Assert HTTP status code
