@@ -166,7 +166,7 @@ Instead of repeating yourself with:
 See more test examples in the folder 'test/api-test'
 
 ## Run test
-Run `node index` in 'test/api' to start the a simple API webservice. Then (in another terminal instance), run `npm test` in the project root folder.
+Run `npm test` in the project root folder.
 
 ## TODO
 * Array notation: there is no way to declare an array yet

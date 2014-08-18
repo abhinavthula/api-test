@@ -34,13 +34,13 @@
  */
 'use strict'
 
-var Test = require('./Test'),
-	Obj = require('./Obj'),
-	Insertion = require('./Insertion'),
-	Clear = require('./Clear'),
-	Declaration = require('./Declaration'),
-	Case = require('./Case'),
-	Find = require('./Find')
+var Test = require('./classes/Test'),
+	Obj = require('./classes/Obj'),
+	Insertion = require('./classes/Insertion'),
+	Clear = require('./classes/Clear'),
+	Declaration = require('./classes/Declaration'),
+	Case = require('./classes/Case'),
+	Find = require('./classes/Find')
 
 /**
  * @param {string} text

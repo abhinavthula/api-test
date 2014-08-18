@@ -1,6 +1,6 @@
 'use strict'
 
-var execute = require('./execute')
+var execute = require('../execute')
 
 /**
  * Represents a var declaration

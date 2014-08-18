@@ -1,8 +1,8 @@
 'use strict'
 
 var request = require('request'),
-	execute = require('./execute'),
-	check = require('./check'),
+	execute = require('../execute'),
+	check = require('../check'),
 	async = require('async')
 
 /**
