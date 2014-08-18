@@ -27,6 +27,7 @@ This syntax can also be used in a subdoc:
 		randomId()
 
 Is the same as:
+
 	itemId: randomId()
 
 ## Simple arrays

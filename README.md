@@ -155,7 +155,7 @@ And then write a test case like this:
 	error(200)
 ```
 
-Instead of repeating youself with:
+Instead of repeating yourself with:
 ```
 	error:
 		code: 200
