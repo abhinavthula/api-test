@@ -127,6 +127,7 @@ user:
 * `baseUrl`: the base API url. Every request url will be composed from this base and the test name.
 * `describe`, `it`, `before`: (optional) the mocha interface. Defaults to global mocha functions
 * `context`: (optional) define your own variables/functions accessible to object definitions
+* `recursive`: (optional) whether to look for *.md files inside subfolders (default: false)
 
 ## Custom context
 You can use custom context to help writing tests. All default context variables and methods will still be accessible (unless overwritten).

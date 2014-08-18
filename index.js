@@ -18,6 +18,7 @@ var parse = require('./parse'),
  * - describe, before, it (default: mocha globals)
  * - baseUrl
  * - context (default: {})
+ * - recursive (default: false)
  */
 module.exports = function (folder, options) {
 	options.mongoUri = validateMongoUri(options.mongoUri)
@@ -28,6 +29,7 @@ module.exports = function (folder, options) {
 	options.it = options.it || it
 	options.context = options.context || {}
 	options.context.__proto__ = baseContext
+	options.recursive = options.recursive || false
 
 	options.describe('api', function () {
 		options.before(function (done) {
@@ -42,16 +44,17 @@ module.exports = function (folder, options) {
 		})
 
 		// Load files
-		fs.readdirSync(folder).forEach(function (item) {
-			if (item.substr(-3) === '.md') {
-				run(parse(fs.readFileSync(path.join(folder, item), 'utf8')), options)
+		walk(options.recursive, folder, function (file) {
+			if (file.substr(-3) === '.md') {
+				run(parse(fs.readFileSync(file, 'utf8')), options)
 			}
 		})
 	})
 }
 
 /**
- *
+ * Make sure the mongo uri has 'localhost' as hostname and 'test' in the DB name
+ * @param {string} mongoUri
  */
 function validateMongoUri(mongoUri) {
 	var tag, rightTag, sha
@@ -83,4 +86,23 @@ function validateMongoUri(mongoUri) {
 		throw new Error('Invalid protection tag')
 	}
 	return mongoUri
+}
+
+/**
+ * Call a function for each file in a given directory
+ * @param {boolean} recursive
+ * @param {string} dir
+ * @param {Function} fn
+ */
+function walk(recursive, dir, fn) {
+	fs.readdirSync(dir).forEach(function (item) {
+		item = path.join(dir, item)
+		if (fs.statSync(item).isDirectory()) {
+			if (recursive) {
+				walk(recursive, item, fn)
+			}
+		} else {
+			fn(item)
+		}
+	})
 }
