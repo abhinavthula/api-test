@@ -7,19 +7,35 @@ var request = require('request'),
 
 /**
  * @class
- * @property {string} name
- * @property {Object} post
- * @property {Object} out
- * @property {number} statusCode
- * @property {Find[]} finds
  */
-function Case(name, post, out, statusCode) {
-	this.name = name
-	this.post = post
-	this.out = out
-	this.statusCode = statusCode
+function Case() {
 	this.finds = []
 }
+
+/**
+ * @property {string}
+ */
+Case.prototype.name
+
+/**
+ * @property {Obj}
+ */
+Case.prototype.post
+
+/**
+ * @property {Obj}
+ */
+Case.prototype.out
+
+/**
+ * @property {number}
+ */
+Case.prototype.statusCode
+
+/**
+ * @property {Find[]}
+ */
+Case.prototype.finds
 
 Case.prototype.execute = function (url, context, db, done) {
 	var post = execute(this.post, context, '<post>'),

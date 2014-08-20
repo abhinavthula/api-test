@@ -1,19 +1,27 @@
 # user/login
 
+This section will be ignored
+
+## Input
+	this is a fake object, won't be parsed as one
+
 ## Setup
+End of ignored section, but paragraph are always ignored
+
 ### user in users
 	name: 'Guilherme'
 	password: '12345'
 
+### error is
+	error:
+		code: 0
+		message: String
+
 ## Wrong password
 ### Post
-	user:
-		name: user.name
-		password: randomStr(5)
+	user: user with password randomStr(5)
 ### Out
-	error:
-		code: 200
-		message: String
+	error with error.code 200
 
 ## Valid
 ### Post
