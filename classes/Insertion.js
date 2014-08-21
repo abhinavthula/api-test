@@ -1,7 +1,6 @@
 'use strict'
 
-var execute = require('../execute'),
-	Clear = require('./Clear')
+var Clear = require('./Clear')
 
 /**
  * Represents a DB insertion
@@ -37,7 +36,7 @@ Insertion.prototype.execute = function (db, cleared, context, done) {
 	}
 
 	// Prepare the document
-	context[that.name] = execute(this.value, context, '<' + this.name + ' in ' + this.collection + '>')
+	context[that.name] = this.value.execute(context, '<' + this.name + ' in ' + this.collection + '>')
 	db.collection(this.collection).insert(context[that.name], {
 		w: 1
 	}, done)

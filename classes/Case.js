@@ -1,7 +1,6 @@
 'use strict'
 
 var request = require('request'),
-	execute = require('../execute'),
 	check = require('../check'),
 	async = require('async')
 
@@ -38,7 +37,7 @@ Case.prototype.statusCode
 Case.prototype.finds
 
 Case.prototype.execute = function (url, context, db, done) {
-	var post = execute(this.post, context, '<post>'),
+	var post = this.post.execute(context, '<post>'),
 		that = this
 	context.post = post
 	request({
@@ -52,7 +51,7 @@ Case.prototype.execute = function (url, context, db, done) {
 		context.out = out
 
 		res.statusCode.should.be.equal(that.statusCode)
-		check(out, execute(that.out, context, '<out>'))
+		check(out, that.out.execute(context, '<out>'))
 		async.each(that.finds, function (find, done) {
 			find.execute(context, db, done)
 		}, done)

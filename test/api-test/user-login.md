@@ -6,7 +6,7 @@ This section will be ignored
 	this is a fake object, won't be parsed as one
 
 ## Setup
-End of ignored section, but paragraph are always ignored
+End of ignored section, but paragraphs are always ignored
 
 ### user in users
 	name: 'Guilherme'

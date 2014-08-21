@@ -1,7 +1,5 @@
 'use strict'
 
-var execute = require('../execute')
-
 /**
  * @class
  * @property {string} collection
@@ -13,7 +11,7 @@ function Find(collection, value) {
 }
 
 Find.prototype.execute = function (context, db, done) {
-	var selector = execute(this.value, context, '<find in ' + this.collection + '>'),
+	var selector = this.value.execute(context, '<find in ' + this.collection + '>'),
 		that = this
 	db.collection(this.collection).findOne(selector, function (err, doc) {
 		if (err) {

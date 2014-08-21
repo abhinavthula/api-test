@@ -70,7 +70,7 @@ module.exports = function (text) {
 				lastObj = new Obj(i)
 				els.push(lastObj)
 			}
-			lastObj.push(line)
+			lastObj.push(line.substr(1))
 		} else {
 			// Ignored line
 			lastObj = null
@@ -277,7 +277,7 @@ function parseCaseFinds(testCase, els, i) {
 		} else if (!(els[i + 1] instanceof Obj)) {
 			throw new ParseError('Expected an {obj}', els[i + 1])
 		}
-		testCase.finds.push(new Find(els[i].value.substr(8).trim(), els[i + 1].value))
+		testCase.finds.push(new Find(els[i].value.substr(8).trim(), els[i + 1].parse()))
 		i += 2
 	}
 	return i

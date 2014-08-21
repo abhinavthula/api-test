@@ -1,7 +1,5 @@
 'use strict'
 
-var execute = require('../execute')
-
 /**
  * Represents a var declaration
  * @class
@@ -21,7 +19,7 @@ function Declaration(name, value) {
  * @param {Function} done
  */
 Declaration.prototype.execute = function (db, cleared, context, done) {
-	context[this.name] = execute(this.value, context, '<' + this.name + ' is>')
+	context[this.name] = this.value.execute(context, '<' + this.name + ' is>')
 	done()
 }
 
