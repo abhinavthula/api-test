@@ -78,7 +78,7 @@ Obj.prototype.execute = function (context, name) {
 	} else if (typeof this.value === 'string') {
 		return _eval(this.value, context, name)
 	} else if (this.value instanceof Mixin) {
-		return null
+		return this.value.execute(context, name)
 	} else {
 		r = Object.create(null)
 		for (key in this.value) {
@@ -175,8 +175,10 @@ Obj.prototype._parseObject = function () {
 Obj.prototype._parseMixin = function () {
 	var path, str, pos, value
 
-	if (this.lines.length !== 1 || !(path = readPath(this.lines[0]))) {
-		// Must start with a path
+	if (this.lines.length !== 1 ||
+		!(path = readPath(this.lines[0])) ||
+		!path.newStr.match(/^with(out)? /)) {
+		// Must start with a path followed by 'with' or 'without'
 		return false
 	}
 
@@ -189,7 +191,7 @@ Obj.prototype._parseMixin = function () {
 	if (str.indexOf('without ') === 0) {
 		str = eat(str, 7)
 		while ((path = readPath(str))) {
-			this.value.remove.push(path.parts)
+			this.value.removals.push(path.parts)
 			str = path.newStr
 
 			if (!str || str[0] === ';') {
@@ -217,7 +219,7 @@ Obj.prototype._parseMixin = function () {
 		if (!value) {
 			throw new ParseError('Expected a value for path ' + path.name, this)
 		}
-		this.value.add.push({
+		this.value.additions.push({
 			path: path.parts,
 			value: value
 		})

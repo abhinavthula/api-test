@@ -1,8 +1,6 @@
 # Doc Syntax
 This file will cover every detail of the doc syntax, inspired in JSON and designed to be very concise and expressive.
 
-**THIS IS A DRAFT**, some features listed here don't work yet
-
 ## Basic example
 	user:
 		name: 'John'
@@ -95,4 +93,6 @@ will create the object `{items: [{name: 'a', price: 60, ok: true}, {name: 'b', p
 gives `[{name: 'b', price: 63}]`
 
 ## Keys
-All keys must be valid JS identifiers (contain only letters, numbers, _ and $) and not start with numbers (except array positions in paths like `items.0`). Otherwise a key can be escaped with quotes, like: `"a very -strange kèy"` or `'even worse\', y u do this?'`. An example of a path with escaped key: `user."1 strange key"`
+All keys must be valid JS identifiers (contain only letters, numbers, _ and $) and not start with numbers (except array positions in paths like `items.0`).
+
+Otherwise a key can be escaped with quotes, like: `"a very -strange kèy"` or `'even worse\', y u do this?'`. An example of a path with escaped key: `user."1 strange key"`. **NOTE: THIS IS A DRAFT**, escaped keys don't work yet

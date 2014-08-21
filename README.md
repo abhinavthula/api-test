@@ -170,7 +170,5 @@ See more test examples in the folder 'test/api-test'
 Run `npm test` in the project root folder.
 
 ## TODO
-* Array notation: there is no way to declare an array yet
 * Make request to arbitrary endpoints in a test case
-* Mixin
 * Make keys less restrictive
