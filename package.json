@@ -1,6 +1,6 @@
 {
 	"name": "api-test",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"author": "Sitegui <sitegui@sitegui.com.br>",
 	"description": "API testing made simple",
 	"main": "./index.js",
@@ -26,7 +26,7 @@
 		"node": ">=0.10"
 	},
 	"scripts": {
-		"test": "mocha test"
+		"test": "mocha test -b"
 	},
 	"devDependencies": {
 		"body-parser": "^1.6.3",

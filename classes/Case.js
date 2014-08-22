@@ -36,25 +36,42 @@ Case.prototype.statusCode
  */
 Case.prototype.finds
 
-Case.prototype.execute = function (url, context, db, done) {
-	var post = this.post.execute(context, '<post>'),
-		that = this
-	context.post = post
-	request({
-		url: url,
-		method: 'POST',
-		json: post
-	}, function (err, res, out) {
-		if (err) {
-			return done(err)
-		}
-		context.out = out
+/**
+ * Run the test case
+ * @param {Object} options an object with keys db, it, url, context, strict
+ * @param {string} testName
+ */
+Case.prototype.execute = function (options, testName) {
+	var that = this
 
-		res.statusCode.should.be.equal(that.statusCode)
-		check(out, that.out.execute(context, '<out>'))
-		async.each(that.finds, function (find, done) {
-			find.execute(context, db, done)
-		}, done)
+	options.it(this.name, function (done) {
+		// Prepare context
+		options.context.prev = {
+			post: options.context.post,
+			out: options.context.out
+		}
+		delete options.context.post
+		delete options.context.out
+
+		var post = that.post.execute(options.context, '<post>')
+		options.context.post = post
+
+		request({
+			url: options.baseUrl + testName,
+			method: 'POST',
+			json: post
+		}, function (err, res, out) {
+			if (err) {
+				return done(err)
+			}
+			options.context.out = out
+
+			res.statusCode.should.be.equal(that.statusCode)
+			check(out, that.out.execute(options.context, '<out>'), options.strict)
+			async.each(that.finds, function (find, done) {
+				find.execute(options.context, options.db, done)
+			}, done)
+		})
 	})
 }
 

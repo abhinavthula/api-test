@@ -49,7 +49,7 @@ Markdown was choosen because it's easy to write/read and it's not code!
 A test is divided in two parts:
 
 ### Test setup
-This is an optional section called 'Setuo' that let you insert documents, clear mongo collections to prepare the database before the test cases run.
+This is an optional section called 'Setup' that lets you insert documents, declare variables and clear mongo collections to prepare the database before the test cases run.
 
 #### Inserting documents
 The syntax is simply:
@@ -60,7 +60,7 @@ The syntax is simply:
 
 At the first insertion in a collection, it will be cleared. This is important to make every test isolated. You may refer to this object by its _docName_.
 
-The syntax for _docDescription_ is described at bellow
+The syntax for _docDescription_ is described bellow
 
 #### Clearing collections
 The syntax is simply:
@@ -85,7 +85,7 @@ This will make _varName_ available to every following object block.
 A test case has three optional sections:
 
 * `Post`: the JSON body to send by POST. Must start with a header like `### Post`. Default: empty JSON object `{}`
-* `Out`: the expected JSON output. Must start with a header like `### Out [_statusCode_]`. Default: no output checking. The _statusCode_ is optional and default to 200
+* `Out`: the expected JSON output. Must start with a header like `### Out [_statusCode_]`. Default: no output checking. The _statusCode_ is optional and defaults to 200
 * `Finds`: optional DB assertions. Must start with a header like `### Find in _collection_`
 
 In all cases, the syntax is described bellow
@@ -108,6 +108,13 @@ user:
 	country: 'cm'.toUpperCase()
 ```
 
+Or mixins, like:
+```
+user with name.first 'Unhappy'
+```
+
+Learn more about the syntax in the file [doc-syntax.md](https://github.com/clubedaentrega/api-test/blob/master/doc-syntax.md)
+
 ## Default context
 
 * `randomId()`: return a random mongo-id as a 24-hex-char string
@@ -128,12 +135,13 @@ user:
 * `describe`, `it`, `before`: (optional) the mocha interface. Defaults to global mocha functions
 * `context`: (optional) define your own variables/functions accessible to object definitions
 * `recursive`: (optional) whether to look for *.md files inside subfolders (default: false)
+* `strict`: (optional) whether the output check should be strict and complain about unexpected keys (default: true)
 
 ## Custom context
 You can use custom context to help writing tests. All default context variables and methods will still be accessible (unless overwritten).
 
 For example: if all endpoints return errors like this: `{error: {code: _code_, message: _aDebugString_}}`, you can pass as context:
-```
+```javascript
 options.context = {
 	error: function (code) {
 		return {
@@ -164,7 +172,7 @@ Instead of repeating yourself with:
 ```
 
 ## Examples
-See more test examples in the folder 'test/api-test'
+See more test examples in the folder [test/api-test](https://github.com/clubedaentrega/api-test/tree/master/test/api-test)
 
 ## Run test
 Run `npm test` in the project root folder.

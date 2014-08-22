@@ -2,7 +2,6 @@
 'use strict'
 
 var parse = require('./parse'),
-	run = require('./run'),
 	fs = require('fs'),
 	path = require('path'),
 	MongoClient = require('mongodb').MongoClient,
@@ -19,6 +18,7 @@ var parse = require('./parse'),
  * - baseUrl
  * - context (default: {})
  * - recursive (default: false)
+ * - strict (default: true)
  */
 module.exports = function (folder, options) {
 	options.mongoUri = validateMongoUri(options.mongoUri)
@@ -30,6 +30,7 @@ module.exports = function (folder, options) {
 	options.context = options.context || {}
 	options.context.__proto__ = baseContext
 	options.recursive = options.recursive || false
+	options.strict = options.strict === undefined ? true : options.strict
 
 	options.describe('api', function () {
 		options.before(function (done) {
@@ -46,7 +47,7 @@ module.exports = function (folder, options) {
 		// Load files
 		walk(options.recursive, folder, function (file) {
 			if (file.substr(-3) === '.md') {
-				run(parse(fs.readFileSync(file, 'utf8')), options)
+				parse(fs.readFileSync(file, 'utf8')).execute(options)
 			}
 		})
 	})
