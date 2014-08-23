@@ -234,7 +234,7 @@ function parseCasePost(testCase, els, i) {
 		testCase.post = els[i + 1].parse()
 		i += 2
 	} else {
-		testCase.post = Obj.empty
+		testCase.post = Obj.empty()
 	}
 	return i
 }
@@ -256,7 +256,7 @@ function parseCaseOut(testCase, els, i) {
 		testCase.statusCode = els[i].value === 'Out' ? 200 : Number(els[i].value.substr(4))
 		i += 2
 	} else {
-		testCase.out = Obj.empty
+		testCase.out = Obj.empty()
 		testCase.statusCode = 200
 	}
 	return i

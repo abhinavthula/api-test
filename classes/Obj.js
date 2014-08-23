@@ -88,8 +88,16 @@ Obj.prototype.execute = function (context, name) {
 	}
 }
 
-Obj.empty = new Obj(0)
-Obj.empty.push('empty')
+/**
+ * Get an empty Obj already parsed
+ * This obj, when parsed, will give `{}`
+ * @returns {Obj}
+ */
+Obj.empty = function () {
+	var obj = new Obj(0)
+	obj.push('({})')
+	return obj.parse()
+}
 
 module.exports = Obj
 
@@ -275,5 +283,3 @@ Obj.prototype._parseJS = function () {
 	this.value = this.lines[0]
 	return true
 }
-
-Obj.empty.parse()
