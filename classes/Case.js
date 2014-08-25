@@ -22,6 +22,11 @@ Case.prototype.name
 Case.prototype.post
 
 /**
+ * @property {string}
+ */
+Case.prototype.postUrl
+
+/**
  * @property {Obj}
  */
 Case.prototype.out
@@ -57,7 +62,7 @@ Case.prototype.execute = function (options, testName) {
 		options.context.post = post
 
 		request({
-			url: options.baseUrl + testName,
+			url: options.baseUrl + (that.postUrl || testName),
 			method: 'POST',
 			json: post
 		}, function (err, res, out) {

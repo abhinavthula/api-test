@@ -84,7 +84,7 @@ This will make _varName_ available to every following object block.
 ### Test cases
 A test case has three optional sections:
 
-* `Post`: the JSON body to send by POST. Must start with a header like `### Post`. Default: empty JSON object `{}`
+* `Post`: the JSON body to send by POST. Must start with a header like `### Post [_url_]`. Default: empty JSON object `{}`. The _url_ is optional and defaults to the test name
 * `Out`: the expected JSON output. Must start with a header like `### Out [_statusCode_]`. Default: no output checking. The _statusCode_ is optional and defaults to 200
 * `Finds`: optional DB assertions. Must start with a header like `### Find in _collection_`
 
@@ -178,5 +178,4 @@ See more test examples in the folder [test/api-test](https://github.com/clubedae
 Run `npm test` in the project root folder.
 
 ## TODO
-* Make request to arbitrary endpoints in a test case
 * Make keys less restrictive

@@ -6,10 +6,10 @@ This test checks if a signuped user can login afterwards
 
 ### user is
 	name: 'Guilherme'
-	pass: '12345'
+	password: '12345'
 
 ## Signup
-### Post user/login
+### Post user/signup
 	user: user
 ### Out
 	error: null

@@ -227,10 +227,11 @@ function parseCase(test, els, i) {
  * @throws if the syntax is invalid
  */
 function parseCasePost(testCase, els, i) {
-	if (checkHeader(els[i], 3, 'Post')) {
+	if (checkHeader(els[i], 3, /^Post( |$)/)) {
 		if (!(els[i + 1] instanceof Obj)) {
 			throw new ParseError('Expected an {obj}', els[i + 1])
 		}
+		testCase.postUrl = els[i].value === 'Post' ? '' : els[i].value.substr(4).trim()
 		testCase.post = els[i + 1].parse()
 		i += 2
 	} else {
@@ -248,7 +249,7 @@ function parseCasePost(testCase, els, i) {
  * @throws if the syntax is invalid
  */
 function parseCaseOut(testCase, els, i) {
-	if (checkHeader(els[i], 3) && els[i].value.match(/^Out( \d{3})?$/)) {
+	if (checkHeader(els[i], 3, /^Out( \d{3})?$/)) {
 		if (!(els[i + 1] instanceof Obj)) {
 			throw new ParseError('Expected an {obj}', els[i + 1])
 		}
@@ -287,9 +288,19 @@ function parseCaseFinds(testCase, els, i) {
  * Check if the given value is a Header with the given level and value
  * @param {*} x
  * @param {number} level
- * @param {string} [value] default: no value checking
+ * @param {(string|RegExp)} [value] default: no value checking
  * @returns {boolean}
  */
 function checkHeader(x, level, value) {
-	return x instanceof Header && x.level === level && (!value || x.value === value)
+	if (!(x instanceof Header) || x.level !== level) {
+		return false
+	}
+	if (value) {
+		if (value instanceof RegExp) {
+			return value.test(x.value)
+		} else {
+			return value === x.value
+		}
+	}
+	return true
 }
