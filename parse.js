@@ -1,35 +1,7 @@
 /**
  * @file Parses simple markdown text
  *
- * The syntax is described using these notations:
- * * {x} represents a non-terminal symbol that can span more than one line
- * * <x> represents an one-line non-terminal symbol
- * * / represents a line-break
- * * _x_ represents an arbritary text field
- * * 'x' represents the literal x
- * * x? means optional
- * * x+ means at least once
- * * x* means any number of times
- * * x|y means either x or y
- * * [D] means a digit
- * * ... means ignored content
- *
- * {file} = <header> / ... / {setup} / {test}+
- *
- * <header> = '# ' _testName_
- * {setup} = '## Setup' / ({insertion} | {clear} | {declaration})*
- * {test} = '## ' _caseName_ / ('### Post' / {obj})? / {out}? / {find}*
- *
- * {insertion} = '### ' _docName_ ' in ' _collection_ / {obj}
- * {clear} = '### Clear ' _collection_
- * {declaration} = '### ' _varName_ ' is' / {obj}
- * {obj} = '\t' (_value_ | {subobj} | <prop>)
- * {out} = '### Out' (' ' <statusCode>)? / {obj}
- * {find} = '### Find in ' _collection_ / {obj}
- *
- * {subobj} = _key_ ':' / '\t' {obj}
- * <prop> = _key_ ':' _value_
- * <statusCode> = [D] [D] [D]
+ * The syntax is described in doc-syntax.md
  *
  * Paragraph text is ignored (it can be used for documentation)
  */
@@ -208,7 +180,14 @@ function parseCase(test, els, i) {
 	if (!checkHeader(els[i], 2)) {
 		throw new ParseError('Expected "## _caseName_"', els[i])
 	}
-	testCase.name = els[i++].value
+	if (/ \(skip\)$/.test(els[i].value)) {
+		testCase.name = els[i].value.substr(0, els[i].value.length - 7).trimRight()
+		testCase.skip = true
+	} else {
+		testCase.name = els[i].value
+		testCase.skip = false
+	}
+	i++
 
 	i = parseCasePost(testCase, els, i)
 	i = parseCaseOut(testCase, els, i)

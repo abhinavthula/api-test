@@ -90,6 +90,9 @@ A test case has three optional sections:
 
 In all cases, the syntax is described bellow
 
+## Skipping test cases
+By appending ` (skip)` to a test case name (see an [example](https://github.com/clubedaentrega/api-test/blob/master/test/api-test/recursive/user-login.md#wrong-password-skip)) it will be simply ignored. This puts them in a pending state, and is favoured over removing tests which you may forget to add back again.
+
 ## Object syntax
 The syntax was designed to be concise and expressive. The values will be eval'ed as normal JS with a context with special variables (see `default context` bellow).
 
@@ -179,3 +182,5 @@ Run `npm test` in the project root folder.
 
 ## TODO
 * Make keys less restrictive
+* Ignore key ordering in find
+* Static checks for clear/insert/find

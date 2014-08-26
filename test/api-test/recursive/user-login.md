@@ -5,7 +5,7 @@
 	name: 'Guilherme'
 	password: '12345'
 
-## Wrong password
+## Wrong password (skip)
 ### Post
 	user:
 		name: user.name

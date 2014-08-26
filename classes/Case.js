@@ -12,6 +12,11 @@ function Case() {
 }
 
 /**
+ * @property {boolean}
+ */
+Case.prototype.skip
+
+/**
  * @property {string}
  */
 Case.prototype.name
@@ -47,9 +52,10 @@ Case.prototype.finds
  * @param {string} testName
  */
 Case.prototype.execute = function (options, testName) {
-	var that = this
+	var that = this,
+		it = this.skip ? options.it.skip : options.it
 
-	options.it(this.name, function (done) {
+	it(this.name, function (done) {
 		// Prepare context
 		options.context.prev = {
 			post: options.context.post,
