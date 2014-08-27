@@ -9,12 +9,20 @@ var _eval = require('../_eval'),
  * @param {number} sourceLine
  */
 function Obj(sourceLine) {
+	/** @param {string[]} */
 	this.lines = []
+	/**
+	 * @member {Object}
+	 * @property {number} begin
+	 * @property {number} end
+	 */
 	this.source = {
 		begin: sourceLine,
 		end: sourceLine
 	}
+	/** @member {boolean} */
 	this.parsed = false
+	/** @member {Object|Array|string|Mixin} */
 	this.value = null
 }
 

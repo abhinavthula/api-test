@@ -7,11 +7,14 @@ var Clear = require('./Clear')
  * @class
  * @property {string} name
  * @property {string} collection
- * @property {Object} value
+ * @property {Obj} value
  */
 function Insertion(name, collection, value) {
+	/** @member {string} */
 	this.name = name
+	/** @member {string} */
 	this.collection = collection
+	/** @member {Obj} */
 	this.value = value
 }
 

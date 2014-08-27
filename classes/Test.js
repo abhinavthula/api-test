@@ -4,13 +4,13 @@ var async = require('async')
 
 /**
  * @class
- * @property {string} name
- * @property {Setup[]} setups
- * @property {Case[]} cases
  */
 function Test() {
+	/** @member {string} */
 	this.name = ''
+	/** @member {Array<Insertion|Clear|Declaration>} */
 	this.setups = []
+	/** @member {Case[]} */
 	this.cases = []
 }
 

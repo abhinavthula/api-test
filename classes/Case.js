@@ -8,43 +8,27 @@ var request = require('request'),
  * @class
  */
 function Case() {
+	/** @member {string} */
+	this.name = ''
+
+	/** @member {boolean} */
+	this.skip = false
+
+	/** @member {Obj} */
+	this.post = null
+
+	/** @member {string} */
+	this.postUrl = ''
+
+	/* @member {Obj} */
+	this.out = null
+
+	/** @member {number} */
+	this.statusCode = 0
+
+	/** @member {Find[]} */
 	this.finds = []
 }
-
-/**
- * @property {boolean}
- */
-Case.prototype.skip
-
-/**
- * @property {string}
- */
-Case.prototype.name
-
-/**
- * @property {Obj}
- */
-Case.prototype.post
-
-/**
- * @property {string}
- */
-Case.prototype.postUrl
-
-/**
- * @property {Obj}
- */
-Case.prototype.out
-
-/**
- * @property {number}
- */
-Case.prototype.statusCode
-
-/**
- * @property {Find[]}
- */
-Case.prototype.finds
 
 /**
  * Run the test case

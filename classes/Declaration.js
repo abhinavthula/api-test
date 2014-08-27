@@ -3,11 +3,13 @@
 /**
  * Represents a var declaration
  * @class
- * @property {string} name
- * @property {Object} value
+ * @param {string} name
+ * @param {Obj} value
  */
 function Declaration(name, value) {
+	/** @member {string} */
 	this.name = name
+	/** @member {Obj} */
 	this.value = value
 }
 

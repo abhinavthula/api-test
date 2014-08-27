@@ -4,6 +4,7 @@
  * @class
  * @param {string} message
  * @param {(Header|Obj)} [el] The element that caused the error (null if not applicable)
+ * @extends Error
  */
 function ParseError(message, el) {
 	Error.call(this)

@@ -3,29 +3,30 @@
 var _eval = require('../_eval')
 
 /**
+ * @typedef {Object} Mixin~Addition
+ * @property {string[]} path
+ * @property {string[]} value
+ */
+
+/**
+ * @typedef {string[]} Mixin~Removal
+ */
+
+/**
  * @class
  */
 function Mixin() {
+	/** @member {Mixin~Addition[]} */
 	this.additions = []
+
+	/** @member {Mixin~Removal[]} */
 	this.removals = []
+
+	/** The base path components
+	 * @member {string[]}
+	 */
+	this.base = []
 }
-
-/**
- * The base path components
- * @property {string[]}
- */
-Mixin.prototype.base
-
-/**
- * @property {{path:string[],value:string}[]}
- */
-Mixin.prototype.additions
-
-/**
- * @property {string[][]}
- */
-Mixin.prototype.removals
-
 
 /**
  * Execute and return the result for the parsed Mixin
@@ -62,6 +63,7 @@ Mixin.prototype.execute = function (context, name) {
 /**
  * @param {*} x
  * @returns {*}
+ * @private
  */
 function copyDeep(x) {
 	var r, key
@@ -83,9 +85,9 @@ function copyDeep(x) {
 /**
  * Remove a path from an object
  * @param {Object} obj
- * @param {(string|number)[]} path
+ * @param {Array<string|number>} path
  * @param {number} [i]
- * @throws
+ * @throws {Error}
  * @private
  */
 function remove(obj, path, i) {
@@ -130,11 +132,10 @@ function remove(obj, path, i) {
 /**
  * Add/update a path off an object
  * @param {!Object} obj
- * @param {(string|number)[]} path
+ * @param {Array<string|number>} path
  * @param {*} value
  * @param {number} [i]
- * @throws
- * @private
+ * @throws {Error}
  */
 function add(obj, value, path, i) {
 	i = i || 0
