@@ -182,3 +182,4 @@ Run `npm test` in the project root folder.
 
 ## TODO
 * Make keys less restrictive
+* Make type check in finds (like `{name: String}`) (covert to `$type` operator)
