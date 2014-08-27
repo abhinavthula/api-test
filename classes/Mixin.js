@@ -144,7 +144,7 @@ function add(obj, value, path, i) {
 		last = i === path.length - 1
 
 	if (!obj || typeof obj !== 'object') {
-		throw new Error('Can\'t remove key ' + key + ' from non-object')
+		throw new Error('Can\'t add key ' + key + ' to non-object')
 	}
 
 	if (Array.isArray(obj)) {
@@ -168,6 +168,9 @@ function add(obj, value, path, i) {
 			if (last) {
 				obj[key] = value
 			} else {
+				if (!(key in obj)) {
+					obj[key] = Object.create(null)
+				}
 				add(obj[key], value, path, i + 1)
 			}
 		}
