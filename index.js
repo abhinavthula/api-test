@@ -76,10 +76,11 @@ function validateMongoUri(mongoUri) {
 	if (tag !== rightTag) {
 		console.log('++++++++++')
 		if (rightTag) {
-			console.log('The mongoUri "' + mongoUri + '" seems not be test-safe')
+			console.log('The mongoUri "' + mongoUri.substr(0, 17) + '..." seems not to be test-safe')
 			console.log('I recommend you to connect to a localhost instance and a database with "test" in the name')
 			console.log('Remember that the database is DROPPED before every test!')
-			console.log('If you are really sure, please append "!' + rightTag + '!" to your mongoUri')
+			console.log('If you are really sure, please prepend "!' + rightTag + '!" to your mongoUri')
+			console.log('Like this: "!' + rightTag + '!' + mongoUri.substr(0, 17) + '..."')
 		} else {
 			console.log('Please remove the !tag! from the mongoUri to run the test')
 		}

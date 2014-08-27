@@ -3,7 +3,7 @@
 /**
  * @class
  * @param {string} message
- * @param {Header|Obj} [...el] The element that caused the error (null if not applicable)
+ * @param {Header|Obj} [...el] The element(s) that caused the error
  * @extends Error
  */
 function ParseError(message) {
