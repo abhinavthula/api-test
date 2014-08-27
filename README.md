@@ -183,4 +183,3 @@ Run `npm test` in the project root folder.
 ## TODO
 * Make keys less restrictive
 * Ignore key ordering in find
-* Static checks for clear/insert/find

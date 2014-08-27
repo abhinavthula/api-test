@@ -12,6 +12,11 @@ function Test() {
 	this.setups = []
 	/** @member {Case[]} */
 	this.cases = []
+	/**
+	 * A map with used collections and the element that has cleared it
+	 * @member {Object<Header>}
+	 */
+	this.collections = Object.create(null)
 }
 
 /**
@@ -24,9 +29,8 @@ Test.prototype.execute = function (options) {
 		// DB setup
 		options.before(function (done) {
 			// Insert each document
-			var cleared = []
 			async.eachSeries(that.setups, function (setup, done) {
-				setup.execute(options.db, cleared, options.context, done)
+				setup.execute(options.db, options.context, done)
 			}, done)
 		})
 

@@ -21,22 +21,11 @@ function Insertion(name, collection, value) {
 /**
  * Insert the object in the db
  * @param {Object} db the mongodb connected db
- * @param {string[]} cleared
  * @param {Object} context
  * @param {Function} done
  */
-Insertion.prototype.execute = function (db, cleared, context, done) {
+Insertion.prototype.execute = function (db, context, done) {
 	var that = this
-
-	if (cleared.indexOf(this.collection) === -1) {
-		// Clear the collection first
-		return new Clear(this.collection).execute(db, cleared, context, function (err) {
-			if (err) {
-				return done(err)
-			}
-			that.execute(db, cleared, context, done)
-		})
-	}
 
 	// Prepare the document
 	context[that.name] = this.value.execute(context, '<' + this.name + ' in ' + this.collection + '>')

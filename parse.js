@@ -135,7 +135,7 @@ function parseCases(test, els, i) {
  * @throws if the syntax is invalid
  */
 function parseSetupItem(test, els, i) {
-	var match, header
+	var match, header, coll, el, msg
 
 	if (checkHeader(els[i], 2)) {
 		// Out of setup section
@@ -146,19 +146,42 @@ function parseSetupItem(test, els, i) {
 
 	header = els[i].value
 	if ((match = header.match(/^Clear ([a-zA-Z_$][a-zA-Z0-9_$]*)$/))) {
-		test.setups.push(new Clear(match[1]))
+		// Clear a collection
+		coll = match[1]
+		if (coll in test.collections) {
+			el = test.collections[coll]
+			if (el.value.indexOf('Clear ') === 0) {
+				msg = 'No need to clear the same collection twice'
+			} else {
+				msg = 'Clearing the collection after insertion is not a good idea'
+			}
+			throw new ParseError(msg, el, els[i])
+		}
+		test.collections[coll] = els[i]
+		test.setups.push(new Clear(coll))
 		return i + 1
 	} else if ((match = header.match(/^([a-zA-Z_$][a-zA-Z0-9_$]*) is$/))) {
+		// Declare a variable
 		if (!(els[i + 1] instanceof Obj)) {
 			throw new ParseError('Expected an {obj}', els[i + 1])
 		}
 		test.setups.push(new Declaration(match[1], els[i + 1].parse()))
 		return i + 2
 	} else if ((match = header.match(/^([a-zA-Z_$][a-zA-Z0-9_$]*) in ([a-zA-Z_$][a-zA-Z0-9_$]*)$/))) {
+		// Insert a document (clear the collection implicitly)
 		if (!(els[i + 1] instanceof Obj)) {
 			throw new ParseError('Expected an {obj}', els[i + 1])
 		}
-		test.setups.push(new Insertion(match[1], match[2], els[i + 1].parse()))
+		coll = match[2]
+		if (!(coll in test.collections)) {
+			// Push implicit clear
+			test.collections[coll] = els[i]
+			test.setups.push(new Clear(coll))
+		} else if (test.collections[coll].value.indexOf('Clear ') === 0) {
+			el = test.collections[coll]
+			throw new ParseError('No need to clear the collection before insertion, this is done automatically for you', el, els[i])
+		}
+		test.setups.push(new Insertion(match[1], coll, els[i + 1].parse()))
 		return i + 2
 	} else {
 		throw new ParseError('Expected either "### _docName_ in _collection_", "### Clear _collection_" or "### _varName_ is"', els[i])
@@ -191,7 +214,7 @@ function parseCase(test, els, i) {
 
 	i = parseCasePost(testCase, els, i)
 	i = parseCaseOut(testCase, els, i)
-	i = parseCaseFinds(testCase, els, i)
+	i = parseCaseFinds(test.collections, testCase, els, i)
 
 	test.cases.push(testCase)
 	return i
@@ -244,20 +267,26 @@ function parseCaseOut(testCase, els, i) {
 
 /**
  * Try to parse a test case finds
+ * @param {Object<Header>} collections Cleared collections
  * @param {Case} testCase
  * @param {Object[]} els
  * @param {number} i
  * @returns {number}
  * @throws if the syntax is invalid
  */
-function parseCaseFinds(testCase, els, i) {
+function parseCaseFinds(collections, testCase, els, i) {
+	var coll
 	while (i < els.length && !checkHeader(els[i], 2)) {
 		if (!checkHeader(els[i], 3) || els[i].value.indexOf('Find in ') !== 0) {
 			throw new ParseError('Expected "### Find in _collection_"', els[i])
 		} else if (!(els[i + 1] instanceof Obj)) {
 			throw new ParseError('Expected an {obj}', els[i + 1])
 		}
-		testCase.finds.push(new Find(els[i].value.substr(8).trim(), els[i + 1].parse()))
+		coll = els[i].value.substr(8).trim()
+		if (!(coll in collections)) {
+			throw new ParseError('You can\'t do a find in a collection that wasn\'t cleared in the setup', els[i])
+		}
+		testCase.finds.push(new Find(coll, els[i + 1].parse()))
 		i += 2
 	}
 	return i
