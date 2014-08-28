@@ -3,12 +3,6 @@
 var _eval = require('../_eval')
 
 /**
- * @typedef {Object} Mixin~Addition
- * @property {string[]} path
- * @property {string[]} value
- */
-
-/**
  * @typedef {string[]} Mixin~Removal
  */
 
@@ -16,8 +10,8 @@ var _eval = require('../_eval')
  * @class
  */
 function Mixin() {
-	/** @member {Mixin~Addition[]} */
-	this.additions = []
+	/** @member {Obj} */
+	this.additions = null
 
 	/** @member {Mixin~Removal[]} */
 	this.removals = []
@@ -36,7 +30,7 @@ function Mixin() {
  * @throws if not parsed
  */
 Mixin.prototype.execute = function (context, name) {
-	var base, i
+	var base, i, additions
 
 	// Execute base
 	base = _eval(this.base[0], context, name)
@@ -52,10 +46,13 @@ Mixin.prototype.execute = function (context, name) {
 	this.removals.forEach(function (path) {
 		remove(base, path)
 	})
-	this.additions.forEach(function (addition) {
-		var value = _eval(addition.value, context, name + '<with ' + addition.path.join('.') + '>')
-		add(base, value, addition.path)
-	})
+
+	if (this.additions) {
+		additions = this.additions.execute(context, name + '.<with>')
+		Object.keys(additions).forEach(function (path) {
+			add(base, additions[path], path.split('.'))
+		}, this)
+	}
 
 	return base
 }

@@ -127,16 +127,18 @@ describe('doc-syntax', function () {
 	})
 
 	it('should work for simple mixins', function () {
-		check(['user with pass "1234"'], {
+		check(['user with pass: "1234"'], {
 			name: 'John',
 			pass: '1234'
 		})
-
 		check(['user without name'], {
 			pass: '123'
 		})
-
-		check(['user without name, pass; with age 36; with token randomStr(16)'], {
+		check([
+			'user without name, pass; with',
+			'	age: 36',
+			'	token: randomStr(16)'
+		], {
 			age: 36,
 			token: 'hi'
 		})
@@ -161,7 +163,7 @@ describe('doc-syntax', function () {
 			}]
 		})
 
-		check(['order with items.ok true'], {
+		check(['order with items.ok: true'], {
 			items: [{
 				name: 'a',
 				price: 60,

@@ -113,7 +113,7 @@ user:
 
 Or mixins, like:
 ```
-user with name.first 'Unhappy'
+user with name.first: 'Unhappy'
 ```
 
 Learn more about the syntax in the file [doc-syntax.md](https://github.com/clubedaentrega/api-test/blob/master/doc-syntax.md)

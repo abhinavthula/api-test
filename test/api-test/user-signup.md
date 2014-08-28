@@ -9,7 +9,7 @@
 
 ## Invalid username
 ### Post
-	user: user with name ''
+	user: user with name: ''
 ### Out
 	error:
 		code: 200
@@ -21,7 +21,7 @@ The password must have at least 5 chars
 
 ### Post
 	user:
-		user with password '1'
+		user with password: '1'
 ### Out
 	error:
 		code: 201
@@ -34,7 +34,7 @@ The password must have at least 5 chars
 	error: null
 	token: String
 ### Find in users
-	user with token out.token
+	user with token: out.token
 
 ## Using the same username again
 ### Post

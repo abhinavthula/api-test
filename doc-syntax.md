@@ -59,7 +59,7 @@ Means `[[1, 2], [3, 4]]`
 ## Mixins
 Mixins are used to derive a similar object from a base one. Suppose `user = {name: 'John', pass: '123'}`. Then,
 
-	user with pass '1234'
+	user with pass: '1234'
 
 will create the object `{name: 'John', pass: '1234'}`
 
@@ -69,9 +69,11 @@ will create the object `{pass: '123'}`
 
 To add and remove multiple properties:
 
-	user without name, pass; with age 36; with token randomStr(16)
+	user without name, pass; with
+		age: 36
+		token: randomStr(16)
 
-`without` must appear before any `with`
+`without` must appear before `with`
 
 ### Paths
 Mixins are not restricted to altering properties, they can also add/remove entire paths. Suppose `order = {items: [{name: 'a', price: 60}, {name: 'b', price: 63}], price: 123}`. Then,
@@ -84,7 +86,7 @@ will create the object `{items: [{name: 'a'}, {name: 'b'}], price: 123}`
 
 will create the object `{items: [{price: 60}, {name: 'b', price: 63}]}`
 
-	order with items.ok true
+	order with items.ok: true
 
 will create the object `{items: [{name: 'a', price: 60, ok: true}, {name: 'b', price: 63, ok: true}], price: 123}`
 

@@ -19,9 +19,9 @@ End of ignored section, but paragraphs are always ignored
 
 ## Wrong password
 ### Post
-	user: user with password randomStr(5)
+	user: user with password: randomStr(5)
 ### Out
-	error with error.code 200
+	error with error.code: 200
 
 ## Valid
 ### Post

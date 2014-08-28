@@ -22,4 +22,4 @@ This test checks if a signuped user can login afterwards
 	error: null
 	token: String
 ### Find in users
-	user with token out.token
+	user with token: out.token

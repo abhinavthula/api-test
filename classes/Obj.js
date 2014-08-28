@@ -148,14 +148,17 @@ Obj.prototype._parseArray = function () {
 }
 
 /**
+ * @param {boolean} [acceptPath=false] whether the object keys can be paths
  * @returns {boolean} false if it's probably not an object
  * @throws {ParseError} if invalid syntax
  * @private
  */
-Obj.prototype._parseObject = function () {
-	var i, line, obj, match, key
+Obj.prototype._parseObject = function (acceptPath) {
+	var i, line, obj, match, key, regex
 
-	if (!this.lines.length || !this.lines[0].match(/^[a-z$_][a-z0-9$_]*:/i)) {
+	regex = acceptPath ? /^((\d+|[a-z$_][a-z0-9$_]*)(\.(\d+|[a-z$_][a-z0-9$_]*))*):/i : /^([a-z$_][a-z0-9$_]*):/i
+
+	if (!this.lines.length || !regex.test(this.lines[0])) {
 		// An object must start with '_key_:'
 		return false
 	}
@@ -164,7 +167,7 @@ Obj.prototype._parseObject = function () {
 	this.value = Object.create(null)
 	for (i = 0; i < this.lines.length; i++) {
 		line = this.lines[i]
-		if ((match = line.match(/^([a-z$_][a-z0-9$_]*):/i))) {
+		if ((match = line.match(regex))) {
 			// A new key
 			if (obj) {
 				this.value[key] = obj.parse()
@@ -189,11 +192,11 @@ Obj.prototype._parseObject = function () {
  * @private
  */
 Obj.prototype._parseMixin = function () {
-	var path, str, pos, value
+	var path, str, i, line, additions
 
-	if (this.lines.length !== 1 ||
+	if (!this.lines.length ||
 		!(path = readPath(this.lines[0])) ||
-		!path.newStr.match(/^with(out)? /)) {
+		!path.newStr.match(/^with(out)?( |$)/)) {
 		// Must start with a path followed by 'with' or 'without'
 		return false
 	}
@@ -204,7 +207,7 @@ Obj.prototype._parseMixin = function () {
 	str = path.newStr
 
 	// Without
-	if (str.indexOf('without ') === 0) {
+	if (str.indexOf('without') === 0) {
 		str = eat(str, 7)
 		while ((path = readPath(str))) {
 			this.value.removals.push(path.parts)
@@ -223,27 +226,27 @@ Obj.prototype._parseMixin = function () {
 	}
 
 	// With
-	while (str.indexOf('with ') === 0) {
+	if (str.indexOf('with') === 0) {
 		str = eat(str, 4)
-		path = readPath(str)
-		if (!path) {
-			throw new ParseError('Expected a path after "with"', this)
+		additions = new Obj(this.source.begin)
+		additions.push(str)
+		for (i = 1; i < this.lines.length; i++) {
+			line = this.lines[i]
+			if (line[0] === '\t') {
+				additions.push(line.substr(1))
+			} else {
+				throw new ParseError('Expected the line to start with "\t"', this)
+			}
 		}
-		str = path.newStr
-		pos = str.indexOf(';')
-		value = pos === -1 ? str : str.substr(0, pos)
-		if (!value) {
-			throw new ParseError('Expected a value for path ' + path.name, this)
-		}
-		this.value.additions.push({
-			path: path.parts,
-			value: value
-		})
-		str = pos === -1 ? '' : eat(str, pos + 1)
-	}
 
-	if (str) {
-		throw new ParseError('Could not parse as mixin: "' + str + '"', this)
+		if (!additions._parseObject(true)) {
+			throw new ParseError('Expected an object sub-document', additions)
+		}
+		additions.parsed = true
+
+		this.value.additions = additions
+	} else if (this.lines.length !== 1) {
+		throw new ParseError('Could not parse as mixin', this)
 	}
 
 	return true
@@ -252,7 +255,7 @@ Obj.prototype._parseMixin = function () {
 /**
  * Try to extract a path from the beginning of the string
  * @param {string} str
- * @returns {Object} with keys 'path' and 'newStr' or null if no path could be read
+ * @returns {Object} with keys 'name', 'parts' and 'newStr' or null if no path could be read
  */
 function readPath(str) {
 	var match, parts
