@@ -182,6 +182,19 @@ describe('doc-syntax', function () {
 			price: 63
 		}])
 	})
+
+	it('should work for mixins with array', function () {
+		check(['order with items.0.name: "c"'], {
+			items: [{
+				name: 'c',
+				price: 60
+			}, {
+				name: 'b',
+				price: 63
+			}],
+			price: 123
+		})
+	})
 })
 
 function check(lines, value) {

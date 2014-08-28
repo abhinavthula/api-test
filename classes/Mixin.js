@@ -50,7 +50,9 @@ Mixin.prototype.execute = function (context, name) {
 	if (this.additions) {
 		additions = this.additions.execute(context, name + '.<with>')
 		Object.keys(additions).forEach(function (path) {
-			add(base, additions[path], path.split('.'))
+			add(base, additions[path], path.split('.').map(function (each) {
+				return /^[0-9]+$/.test(each) ? Number(each) : each
+			}))
 		}, this)
 	}
 

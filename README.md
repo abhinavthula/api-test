@@ -140,6 +140,24 @@ Learn more about the syntax in the file [doc-syntax.md](https://github.com/clube
 * `recursive`: (optional) whether to look for *.md files inside subfolders (default: false)
 * `strict`: (optional) whether the output check should be strict and complain about unexpected keys (default: true)
 
+## Type checking
+
+If you don't know the exact value for an API response or field in the collection, you can check for its type:
+```
+## Testing types
+### Post
+	...
+### Out
+	token: String
+### Find in users
+	password: String
+	lastLogin: Date
+```
+
+The valid values for `### Out` are: `String`, `Number`, `Boolean`, `Object`, `Array`.
+
+For `### Find in _coll_` are: `Number`, `String`, `Boolean`, `Date`, `RegExp`
+
 ## Custom context
 You can use custom context to help writing tests. All default context variables and methods will still be accessible (unless overwritten).
 
@@ -182,4 +200,3 @@ Run `npm test` in the project root folder.
 
 ## TODO
 * Make keys less restrictive
-* Make type check in finds (like `{name: String}`) (covert to `$type` operator)

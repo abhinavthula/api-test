@@ -41,6 +41,8 @@ Find.prototype.execute = function (context, db, done) {
 function flat(value) {
 	var r = Object.create(null),
 		flatValue = function (value, prefix) {
+			var t1, t16, t18
+
 			if (Array.isArray(value)) {
 				// Subarray
 				value.forEach(function (each, i) {
@@ -53,8 +55,49 @@ function flat(value) {
 				Object.keys(value).forEach(function (key) {
 					flatValue(value[key], prefix + key + '.')
 				})
+			} else if (value === Number) {
+				// Since there are 3 BSON types for a number, we need a hack here
+				// use $and with $or for each of those types
+				if (!('$and' in r)) {
+					r.$and = []
+				}
+				prefix = prefix.substr(0, prefix.length - 1)
+				t1 = {}
+				t16 = {}
+				t18 = {}
+				t1[prefix] = {
+					$type: 1
+				}
+				t16[prefix] = {
+					$type: 16
+				}
+				t18[prefix] = {
+					$type: 18
+				}
+
+				r.$and.push({
+					$or: [t1, t16, t18]
+				})
 			} else {
 				// Simple value
+				if (value === String) {
+					value = {
+						$type: 2
+					}
+				} else if (value === Boolean) {
+					value = {
+						$type: 8
+					}
+				} else if (value === Date) {
+					value = {
+						$type: 9
+					}
+				} else if (value === RegExp) {
+					value = {
+						$type: 11
+					}
+				}
+
 				r[prefix.substr(0, prefix.length - 1)] = value
 			}
 		}
