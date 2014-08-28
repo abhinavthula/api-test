@@ -19,14 +19,14 @@ function ParseError(message) {
 require('util').inherits(ParseError, Error)
 
 /**
- * Populate the error message with the original code region that caused the error
+ * Log the original code region that caused the error into the console
  * @param {string[]} originalLines
  */
-ParseError.prototype.addSourceContext = function (originalLines) {
+ParseError.prototype.logSourceContext = function (originalLines) {
 	var start = Infinity,
 		end = -Infinity,
 		str = '\n\n-----',
-		i, focus, checkElFocus
+		i, focus, checkElFocus, lineNum
 
 	if (!this.els.length) {
 		return
@@ -42,11 +42,16 @@ ParseError.prototype.addSourceContext = function (originalLines) {
 
 	for (i = Math.max(0, start - 3); i < end + 3 && i < originalLines.length; i++) {
 		focus = this.els.some(checkElFocus)
-		str += '\n' + (focus ? '>' : ' ') + ' ' + originalLines[i]
+		lineNum = String(i + 1)
+		while (lineNum.length < 3) {
+			lineNum = ' ' + lineNum
+		}
+		str += '\n\x1b[32m' + lineNum + '\x1b[0m '
+		str += (focus ? '\x1b[31;1m>' : ' ') + ' ' + originalLines[i] + (focus ? '\x1b[0m' : '')
 	}
 	str += '\n-----'
 
-	this.message += str
+	console.log(str)
 }
 
 module.exports = ParseError

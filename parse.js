@@ -58,7 +58,7 @@ module.exports = function (text) {
 		i = parseCases(test, els, i)
 	} catch (e) {
 		if (e instanceof ParseError) {
-			e.addSourceContext(originalLines)
+			e.logSourceContext(originalLines)
 		}
 		throw e
 	}

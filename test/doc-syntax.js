@@ -3,6 +3,7 @@
 
 var Obj = require('../classes/Obj'),
 	should = require('should'),
+	ParseError = require('../classes/ParseError'),
 	context = {
 		user: {
 			name: 'John',
@@ -188,5 +189,13 @@ function check(lines, value) {
 	lines.forEach(function (line) {
 		obj.push(line)
 	})
-	should(obj.parse().execute(context, '<>')).be.eql(value)
+	try {
+		obj.parse()
+	} catch (e) {
+		if (e instanceof ParseError) {
+			e.logSourceContext(lines)
+		}
+		throw e
+	}
+	should(obj.execute(context, '<>')).be.eql(value)
 }

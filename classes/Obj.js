@@ -38,9 +38,9 @@ Obj.prototype.push = function (line) {
 	if (line.trim() === '' && !this.lines.length) {
 		// Ignore the first blank line
 		this.source.begin++
-		return
+	} else {
+		this.lines.push(line)
 	}
-	this.lines.push(line)
 	this.source.end++
 }
 
@@ -129,7 +129,7 @@ Obj.prototype._parseArray = function () {
 		if (line[0] === '*') {
 			// A new element
 			if (line[1] !== '\t') {
-				throw new ParseError('Expected a "\t" after "*"', this)
+				throw new ParseError('Expected a "\\t" after "*"', this)
 			}
 			if (obj) {
 				this.value.push(obj.parse())
@@ -140,7 +140,7 @@ Obj.prototype._parseArray = function () {
 			// Last obj continuation
 			obj.push(line.substr(1))
 		} else {
-			throw new ParseError('Expected either a "*" or "\t"', this)
+			throw new ParseError('Expected either a "*" or "\\t"', this)
 		}
 	}
 	this.value.push(obj.parse())
@@ -153,8 +153,10 @@ Obj.prototype._parseArray = function () {
  * @throws {ParseError} if invalid syntax
  * @private
  */
+
 Obj.prototype._parseObject = function (acceptPath) {
-	var i, line, obj, match, key, regex
+	var that = this,
+		i, line, obj, match, key, regex
 
 	regex = acceptPath ? /^((\d+|[a-z$_][a-z0-9$_]*)(\.(\d+|[a-z$_][a-z0-9$_]*))*):/i : /^([a-z$_][a-z0-9$_]*):/i
 
@@ -163,15 +165,22 @@ Obj.prototype._parseObject = function (acceptPath) {
 		return false
 	}
 
-	// Split each object key element
 	this.value = Object.create(null)
+	var save = function (key, obj) {
+		if (obj) {
+			if (key in that.value) {
+				throw new ParseError('Duplicate key "' + key + '"', that)
+			}
+			that.value[key] = obj.parse()
+		}
+	}
+
+	// Split each object key element
 	for (i = 0; i < this.lines.length; i++) {
 		line = this.lines[i]
 		if ((match = line.match(regex))) {
 			// A new key
-			if (obj) {
-				this.value[key] = obj.parse()
-			}
+			save(key, obj)
 			key = match[1]
 			obj = new Obj(this.source.begin + i)
 			obj.push(line.substr(key.length + 1).trim())
@@ -179,10 +188,10 @@ Obj.prototype._parseObject = function (acceptPath) {
 			// Last obj continuation
 			obj.push(line.substr(1))
 		} else {
-			throw new ParseError('Expected either "_key_:" or "\t"', this)
+			throw new ParseError('Expected either "_key_:" or "\\t"', this)
 		}
 	}
-	this.value[key] = obj.parse()
+	save(key, obj)
 	return true
 }
 
@@ -220,7 +229,7 @@ Obj.prototype._parseMixin = function () {
 			} else if (str[0] === ',') {
 				str = eat(str, 1)
 			} else {
-				throw new ParseError('Expected either ";" or "," after path ' + path.name, this)
+				throw new ParseError('Expected either ";" or "," after path "' + path.name + '"', this)
 			}
 		}
 	}
@@ -235,7 +244,7 @@ Obj.prototype._parseMixin = function () {
 			if (line[0] === '\t') {
 				additions.push(line.substr(1))
 			} else {
-				throw new ParseError('Expected the line to start with "\t"', this)
+				throw new ParseError('Expected the line to start with "\\t"', this)
 			}
 		}
 
