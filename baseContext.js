@@ -7,11 +7,16 @@ var ObjectID = require('mongodb').ObjectID
 
 /**
  * Generate a random mongo objectId
- * @returns {string}
+ * @returns {ObjectId}
  */
 module.exports.randomId = function () {
-	return new ObjectID().toHexString()
+	return new ObjectID()
 }
+
+/**
+ * MongoId constructor
+ */
+module.exports.ObjectId = module.exports.ObjectID = ObjectID
 
 /**
  * Generate a random string with base64 chars (A-Za-z0-9+/)
@@ -55,6 +60,53 @@ module.exports.randomCode = function (len) {
 module.exports.randomEmail = function (domain) {
 	domain = domain || 'example.com'
 	return 'test-' + module.exports.randomId() + '@' + domain
+}
+
+/**
+ * Generate a random number
+ * random() is the same as Math.random(): 0 <= x < 1
+ * random(N) returns a number 0 <= x < N
+ * random(M, N) returns M <= x < N
+ * @param {number} [min=0]
+ * @param {number} [max=1]
+ * @returns {number}
+ */
+module.exports.random = function (min, max) {
+	if (min === undefined && max === undefined) {
+		return Math.random()
+	} else if (max === undefined) {
+		return Math.random() * min
+	} else {
+		return min + Math.random() * (max - min)
+	}
+}
+
+/**
+ * Generate a random int min <= x < max
+ * randomInt() is equal to randomInt(0, 100)
+ * randomInt(N) is equal to randomInt(0, N)
+ * @param {number} [min=0]
+ * @param {number} [max=100]
+ * @returns {number}
+ */
+module.exports.randomInt = function (min, max) {
+	return Math.floor(module.exports.random(min, max))
+}
+
+/**
+ * @returns {boolean}
+ */
+module.exports.randomBool = function () {
+	return Math.random() < 0.5
+}
+
+/**
+ * Return one of its arguments
+ * @param {...*} value
+ * @returns {*}
+ */
+module.exports.randomOf = function () {
+	return arguments[Math.floor(Math.random() * arguments.length)]
 }
 
 /**

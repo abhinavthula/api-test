@@ -120,11 +120,16 @@ Learn more about the syntax in the file [doc-syntax.md](https://github.com/clube
 
 ## Default context
 
+* `ObjectId()`: the mongo object id constructor
 * `randomId()`: return a random mongo-id as a 24-hex-char string
 * `randomStr([len=7], [alphabet=a-zA-Z0-9+/])`
 * `randomHex([len=7])`
 * `randomCode([len=7])`
 * `randomEmail([domain='example.com'])`
+* `random([min=0],[max=1])`
+* `randomInt([min=0],[max=100])`
+* `randomBool()`
+* `randomOf(...values)`: return one of its arguments
 * `empty`: the empty object `{}`
 * `post`: the request body of the current test case
 * `out`: the response body of the current test case
