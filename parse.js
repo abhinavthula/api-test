@@ -78,7 +78,13 @@ function parseHeader(test, els, i) {
 	if (!checkHeader(els[i], 1)) {
 		throw new ParseError('Expected a header', els[i])
 	}
-	test.name = els[i].value
+	if (/ \(skip\)$/.test(els[i].value)) {
+		test.name = els[i].value.substr(0, els[i].value.length - 7).trimRight()
+		test.skip = true
+	} else {
+		test.name = els[i].value
+		test.skip = false
+	}
 	return i + 1
 }
 
@@ -137,7 +143,7 @@ function parseCases(test, els, i) {
 function parseSetupItem(test, els, i) {
 	var match, header, coll, el, msg
 
-	if (checkHeader(els[i], 2)) {
+	if (i >= els.length || checkHeader(els[i], 2)) {
 		// Out of setup section
 		return 0
 	} else if (!checkHeader(els[i], 3)) {
