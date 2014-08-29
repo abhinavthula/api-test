@@ -56,13 +56,28 @@ Case.prototype.execute = function (options, testName) {
 			method: 'POST',
 			json: post
 		}, function (err, res, out) {
+			var expected
 			if (err) {
 				return done(err)
 			}
 			options.context.out = out
+			expected = that.out.execute(options.context, '<out>')
 
-			res.statusCode.should.be.equal(that.statusCode)
-			check(out, that.out.execute(options.context, '<out>'), options.strict)
+			try {
+				res.statusCode.should.be.equal(that.statusCode)
+				check(out, expected, options.strict)
+			} catch (e) {
+				console.log('\n-----\n' +
+					'Request details:\n' +
+					'\x1b[1;32mInput:\x1b[0m\n' +
+					JSON.stringify(post, null, '  ') + '\n' +
+					'\x1b[1;32mOutput:\x1b[0m\n' +
+					JSON.stringify(out, null, '  ') + '\n' +
+					'\x1b[1;32mExpected:\x1b[0m\n' +
+					JSON.stringify(expected, null, '  ') + '\n' +
+					'-----\n')
+				throw e
+			}
 			async.each(that.finds, function (find, done) {
 				find.execute(options.context, options.db, done)
 			}, done)

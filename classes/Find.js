@@ -19,15 +19,25 @@ function Find(collection, value) {
  */
 Find.prototype.execute = function (context, db, done) {
 	var selector = flat(this.value.execute(context, '<find in ' + this.collection + '>')),
-		that = this
+		that = this,
+		collection = db.collection(this.collection)
 
-	db.collection(this.collection).findOne(selector, function (err, doc) {
+	collection.findOne(selector, function (err, doc) {
 		if (err) {
 			return done(err)
 		} else if (!doc) {
-			return done(new Error('No document like ' + JSON.stringify(selector) + ' found in ' + that.collection))
+			collection.find().toArray(function (err, docs) {
+				console.log('\n-----\n' +
+					'\x1b[1;32mDocuments in ' + that.collection + ':\x1b[0m\n' +
+					JSON.stringify(docs, null, '  ') + '\n' +
+					'\x1b[1;32mFind query:\x1b[0m\n' +
+					JSON.stringify(selector, null, '  ') + '\n' +
+					'-----\n')
+				return done(new Error('No document like ' + JSON.stringify(selector) + ' found in ' + that.collection))
+			})
+		} else {
+			done()
 		}
-		done()
 	})
 }
 
