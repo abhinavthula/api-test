@@ -13,7 +13,7 @@ function ParseError(message) {
 	this.message = message
 
 	/** @member {Array<Header|Obj>} */
-	this.els = [].slice.call(arguments, 1)
+	this.els = [].slice.call(arguments, 1).filter(Boolean)
 }
 
 require('util').inherits(ParseError, Error)

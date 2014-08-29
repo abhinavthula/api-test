@@ -61,7 +61,6 @@ Obj.prototype.parse = function () {
 
 		// Remove now useless data
 		delete this.lines
-		delete this.source
 	}
 	return this
 }

@@ -1,6 +1,6 @@
 {
 	"name": "api-test",
-	"version": "1.6.1",
+	"version": "1.6.2",
 	"author": "Sitegui <sitegui@sitegui.com.br>",
 	"description": "API testing made simple",
 	"main": "./index.js",
