@@ -19,10 +19,11 @@ var Test = require('./classes/Test'),
 
 /**
  * @param {string} text
+ * @param {function(Array<Header|Obj>)} preParse
  * @returns {Test}
  * @throws if the syntax is invalid
  */
-module.exports = function (text) {
+module.exports = function (text, preParse) {
 	var originalLines, i, line, els, lastObj, test
 
 	// First pass: break into lines
@@ -53,6 +54,7 @@ module.exports = function (text) {
 	// Also recursively parse their content
 	test = new Test
 	try {
+		preParse(els)
 		i = parseHeader(test, els, 0)
 		i = parseSetups(test, els, i)
 		i = parseCases(test, els, i)

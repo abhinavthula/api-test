@@ -12,13 +12,16 @@ var parse = require('./parse'),
 /**
  * Execute the tests described by *.md files in a given folder
  * @param {string} file The folder path
- * @param {object} options an object with optional keys:
- * - mongoUri
- * - describe, before, it (default: mocha globals)
- * - baseUrl
- * - context (default: {})
- * - recursive (default: false)
- * - strict (default: true)
+ * @param {Object} options an object with optional keys:
+ * @param {string} options.mongoUri
+ * @param {string} options.baseUrl
+ * @param {boolean} [options.recursive=false]
+ * @param {boolean} [options.strict=true]
+ * @param {Object} [options.context]
+ * @param {function(Array<Header|Obj>)} [options.preParse]
+ * @param {Function} [options.describe]
+ * @param {Function} [options.before]
+ * @param {Function} [options.it]
  */
 module.exports = function (folder, options) {
 	options.mongoUri = validateMongoUri(options.mongoUri)
@@ -31,6 +34,7 @@ module.exports = function (folder, options) {
 	options.context.__proto__ = baseContext
 	options.recursive = options.recursive || false
 	options.strict = options.strict === undefined ? true : options.strict
+	options.preParse = options.preParse || function () {}
 
 	options.describe('api', function () {
 		options.before(function (done) {
@@ -47,11 +51,26 @@ module.exports = function (folder, options) {
 		// Load files
 		walk(options.recursive, folder, function (file) {
 			if (file.substr(-3) === '.md') {
-				parse(fs.readFileSync(file, 'utf8')).execute(options)
+				parse(fs.readFileSync(file, 'utf8'), options.preParse).execute(options)
 			}
 		})
 	})
 }
+
+/**
+ * @class
+ */
+module.exports.Header = require('./classes/Header')
+
+/**
+ * @class
+ */
+module.exports.Obj = require('./classes/Obj')
+
+/**
+ * @class
+ */
+module.exports.ParseError = require('./classes/ParseError')
 
 /**
  * Make sure the mongo uri has 'localhost' as hostname and 'test' in the DB name
