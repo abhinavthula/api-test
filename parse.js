@@ -19,7 +19,7 @@ var Test = require('./classes/Test'),
 
 /**
  * @param {string} text
- * @param {function(Array<Header|Obj>)} preParse
+ * @param {function(Array<Header|Obj>, Test)} preParse
  * @returns {Test}
  * @throws if the syntax is invalid
  */
@@ -54,7 +54,7 @@ module.exports = function (text, preParse) {
 	// Also recursively parse their content
 	test = new Test
 	try {
-		preParse(els)
+		preParse(els, test)
 		i = parseHeader(test, els, 0)
 		i = parseSetups(test, els, i)
 		i = parseCases(test, els, i)

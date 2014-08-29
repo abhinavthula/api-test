@@ -18,7 +18,7 @@ var parse = require('./parse'),
  * @param {boolean} [options.recursive=false]
  * @param {boolean} [options.strict=true]
  * @param {Object} [options.context]
- * @param {function(Array<Header|Obj>)} [options.preParse]
+ * @param {function(Array<Header|Obj>, Test)} [options.preParse]
  * @param {Function} [options.describe]
  * @param {Function} [options.before]
  * @param {Function} [options.it]
