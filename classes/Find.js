@@ -1,5 +1,7 @@
 'use strict'
 
+var stringify = require('../stringify')
+
 /**
  * @class
  * @property {string} collection
@@ -29,9 +31,9 @@ Find.prototype.execute = function (context, db, done) {
 			collection.find().toArray(function (err, docs) {
 				console.log('\n-----\n' +
 					'\x1b[1;32mDocuments in ' + that.collection + ':\x1b[0m\n' +
-					JSON.stringify(docs, null, '  ') + '\n' +
+					stringify(docs, true) + '\n' +
 					'\x1b[1;32mFind query:\x1b[0m\n' +
-					JSON.stringify(selector, null, '  ') + '\n' +
+					stringify(selector, true) + '\n' +
 					'-----\n')
 				return done(new Error('No document like ' + JSON.stringify(selector) + ' found in ' + that.collection))
 			})

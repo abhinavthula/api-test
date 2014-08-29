@@ -2,7 +2,8 @@
 
 var request = require('request'),
 	check = require('../check'),
-	async = require('async')
+	async = require('async'),
+	stringify = require('../stringify')
 
 /**
  * @class
@@ -70,11 +71,11 @@ Case.prototype.execute = function (options, testName) {
 				console.log('\n-----\n' +
 					'Request details:\n' +
 					'\x1b[1;32mInput:\x1b[0m\n' +
-					JSON.stringify(post, null, '  ') + '\n' +
+					stringify(post, true) + '\n' +
 					'\x1b[1;32mOutput:\x1b[0m\n' +
-					JSON.stringify(out, null, '  ') + '\n' +
+					stringify(out, true) + '\n' +
 					'\x1b[1;32mExpected:\x1b[0m\n' +
-					JSON.stringify(expected, null, '  ') + '\n' +
+					stringify(expected, true) + '\n' +
 					'-----\n')
 				throw e
 			}
