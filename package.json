@@ -1,6 +1,6 @@
 {
 	"name": "api-test",
-	"version": "1.6.0",
+	"version": "1.6.1",
 	"author": "Sitegui <sitegui@sitegui.com.br>",
 	"description": "API testing made simple",
 	"main": "./index.js",
@@ -17,7 +17,7 @@
 	"dependencies": {
 		"async": "^0.9.0",
 		"mocha": "^1.21.4",
-		"mongodb": "^1.4.8",
+		"mongodb": "^1.4.9",
 		"request": "^2.40.0",
 		"should": "^4.0.4"
 	},

@@ -38,7 +38,8 @@ Obj.prototype.push = function (line) {
 	if (line.trim() === '' && !this.lines.length) {
 		// Ignore the first blank line
 		this.source.begin++
-	} else {
+	} else if (!/^\s*\/\//.test(line)) {
+		// Ignore comment lines
 		this.lines.push(line)
 	}
 	this.source.end++
@@ -158,7 +159,7 @@ Obj.prototype._parseObject = function (acceptPath) {
 	var that = this,
 		i, line, obj, match, key, regex
 
-	regex = acceptPath ? /^((\d+|[a-z$_][a-z0-9$_]*)(\.(\d+|[a-z$_][a-z0-9$_]*))*):/i : /^([a-z$_][a-z0-9$_]*):/i
+	regex = acceptPath ? /^((\d+|[a-z$_][a-z0-9$_]*)(\.(\d+|[a-z$_][a-z0-9$_]*))*):/i : /^([a-z$_][a-z0-9$_]*\??):/i
 
 	if (!this.lines.length || !regex.test(this.lines[0])) {
 		// An object must start with '_key_:'

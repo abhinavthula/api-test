@@ -13,8 +13,9 @@ End of ignored section, but paragraphs are always ignored
 	password: '12345'
 
 ### error is
-	error:
+	error: // comment lines will be ignored
 		code: 0
+		// comment lines will be ignored
 		message: String
 
 ## Wrong password
