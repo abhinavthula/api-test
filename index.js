@@ -18,6 +18,7 @@ var parse = require('./parse'),
  * @param {boolean} [options.recursive=false]
  * @param {boolean} [options.strict=true]
  * @param {Object} [options.context]
+ * @param {function(string):boolean} [options.filterFile]
  * @param {function(Array<Header|Obj>, Test)} [options.preParse]
  * @param {Function} [options.describe]
  * @param {Function} [options.before]
@@ -34,6 +35,9 @@ module.exports = function (folder, options) {
 	options.context.__proto__ = baseContext
 	options.recursive = options.recursive || false
 	options.strict = options.strict === undefined ? true : options.strict
+	options.filterFile = options.filterFile || function () {
+		return true
+	}
 	options.preParse = options.preParse || function () {}
 
 	options.describe('api', function () {
@@ -50,7 +54,7 @@ module.exports = function (folder, options) {
 
 		// Load files
 		walk(options.recursive, folder, function (file) {
-			if (file.substr(-3) === '.md') {
+			if (file.substr(-3) === '.md' && options.filterFile(file)) {
 				parse(fs.readFileSync(file, 'utf8'), options.preParse).execute(options)
 			}
 		})

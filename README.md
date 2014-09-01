@@ -146,6 +146,7 @@ Learn more about the syntax in the file [doc-syntax.md](https://github.com/clube
 * `context`: (optional) define your own variables/functions accessible to object definitions
 * `recursive`: (optional) whether to look for *.md files inside subfolders (default: false)
 * `strict`: (optional) whether the output check should be strict and complain about unexpected keys (default: true)
+* `filterFile`: (optional) a function that will be called for every file and should return true if this file should be parsed
 * `preParse`: (optional) a function that will be called with all pre-parsed tokens (Header and Obj). This lets you do crazy stuff with the parsing if you want
 
 ## Type checking
