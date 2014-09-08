@@ -56,6 +56,8 @@ module.exports = function (value, useColors) {
 			pushStr('false', false, false, colors.key)
 		} else if (value === true) {
 			pushStr('true', false, false, colors.key)
+		} else if (value === undefined) {
+			pushStr('undefined', false, false, colors.key)
 		} else if (value === null) {
 			pushStr('null', false, false, colors.key)
 		} else if (typeof value === 'number') {
