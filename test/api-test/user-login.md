@@ -11,7 +11,7 @@ End of ignored section, but paragraphs are always ignored
 ### user in users
 	name: 'Guilherme'
 	password: '12345'
-
+	
 ### error is
 	error: // comment lines will be ignored
 		code: 0

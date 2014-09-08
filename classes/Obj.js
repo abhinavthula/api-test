@@ -187,7 +187,7 @@ Obj.prototype._parseObject = function (acceptPath) {
 		} else if (line[0] === '\t') {
 			// Last obj continuation
 			obj.push(line.substr(1))
-		} else {
+		} else if (line) { // Ignore empty lines
 			throw new ParseError('Expected either "_key_:" or "\\t"', this)
 		}
 	}
