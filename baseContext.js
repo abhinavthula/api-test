@@ -101,6 +101,18 @@ module.exports.randomBool = function () {
 }
 
 /**
+ * Generate a random Date previous from a given Date
+ * @param {number} [interval=86.4e6]
+ * @param {Date} [baseDate=new Date]
+ * @returns {Date}
+ */
+module.exports.randomDate = function (interval, baseDate) {
+	interval = interval || 86.4e6
+	baseDate = baseDate || new Date
+	return new Date(baseDate.getTime() - Math.random() * interval)
+}
+
+/**
  * Return one of its arguments
  * @param {...*} value
  * @returns {*}

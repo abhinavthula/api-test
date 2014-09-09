@@ -131,6 +131,7 @@ Learn more about the syntax in the file [doc-syntax.md](https://github.com/clube
 * `random([min=0],[max=1])`
 * `randomInt([min=0],[max=100])`
 * `randomBool()`
+* `randomDate([interval=1day], [base=now])`
 * `randomOf(...values)`: return one of its arguments
 * `empty`: the empty object `{}`
 * `post`: the request body of the current test case
