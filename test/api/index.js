@@ -94,6 +94,10 @@ app.post('/user/login', function (req, res) {
 	})
 })
 
+app.post('/echo', function (req, res) {
+	res.success(req.body)
+})
+
 server = http.createServer(app)
 server.listen(port)
 
