@@ -63,6 +63,16 @@ module.exports.randomEmail = function (domain) {
 }
 
 /**
+ * Generate a random valid url
+ * @param {string} [base='http://example.com']
+ * @returns {string}
+ */
+module.exports.randomUrl = function (base) {
+	base = base || 'http://example.com'
+	return base + '/' + module.exports.randomId()
+}
+
+/**
  * Generate a random number
  * random() is the same as Math.random(): 0 <= x < 1
  * random(N) returns a number 0 <= x < N
@@ -90,7 +100,13 @@ module.exports.random = function (min, max) {
  * @returns {number}
  */
 module.exports.randomInt = function (min, max) {
-	return Math.floor(module.exports.random(min, max))
+	if (min === undefined && max === undefined) {
+		return module.exports.randomInt(0, 100)
+	} else if (max === undefined) {
+		return module.exports.randomInt(0, min)
+	} else {
+		return Math.floor(module.exports.random(min, max))
+	}
 }
 
 /**
@@ -107,8 +123,13 @@ module.exports.randomBool = function () {
  * @returns {Date}
  */
 module.exports.randomDate = function (interval, baseDate) {
-	interval = interval || 86.4e6
-	baseDate = baseDate || new Date
+	if (interval instanceof Date) {
+		baseDate = interval
+		interval = 86.4e6
+	} else {
+		interval = interval || 86.4e6
+		baseDate = baseDate || new Date
+	}
 	return new Date(baseDate.getTime() - Math.random() * interval)
 }
 

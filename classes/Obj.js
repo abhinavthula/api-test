@@ -153,12 +153,12 @@ Obj.prototype._parseArray = function () {
  * @throws {ParseError} if invalid syntax
  * @private
  */
-
 Obj.prototype._parseObject = function (acceptPath) {
 	var that = this,
-		i, line, obj, match, key, regex
-
-	regex = acceptPath ? /^((\d+|[a-z$_][a-z0-9$_]*)(\.(\d+|[a-z$_][a-z0-9$_]*))*):/i : /^([a-z$_][a-z0-9$_]*\??):/i
+		keyRegex = /^(?:([a-z$_][a-z0-9$_]*\??)|(['"])((\\\\|\\\2|.)*?)\2):/i,
+		pathRegex = /^((\d+|[a-z$_][a-z0-9$_]*)(\.(\d+|[a-z$_][a-z0-9$_]*))*):/i,
+		regex = acceptPath ? pathRegex : keyRegex,
+		i, line, obj, match, key
 
 	if (!this.lines.length || !regex.test(this.lines[0])) {
 		// An object must start with '_key_:'
@@ -181,9 +181,10 @@ Obj.prototype._parseObject = function (acceptPath) {
 		if ((match = line.match(regex))) {
 			// A new key
 			save(key, obj)
-			key = match[1]
+			// 1 for path and simple key; 3 for escaped key
+			key = acceptPath ? match[1] : match[1] || match[3]
 			obj = new Obj(this.source.begin + i)
-			obj.push(line.substr(key.length + 1).trim())
+			obj.push(line.substr(match[0].length).trim())
 		} else if (line[0] === '\t') {
 			// Last obj continuation
 			obj.push(line.substr(1))

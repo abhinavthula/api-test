@@ -128,6 +128,7 @@ Learn more about the syntax in the file [doc-syntax.md](https://github.com/clube
 * `randomHex([len=7])`
 * `randomCode([len=7])`
 * `randomEmail([domain='example.com'])`
+* `randomUrl([base='http://example.com'])`
 * `random([min=0],[max=1])`
 * `randomInt([min=0],[max=100])`
 * `randomBool()`

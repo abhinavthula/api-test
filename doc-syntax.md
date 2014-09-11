@@ -97,4 +97,4 @@ gives `[{name: 'b', price: 63}]`
 ## Keys
 All keys must be valid JS identifiers (contain only letters, numbers, _ and $) and not start with numbers (except array positions in paths like `items.0`).
 
-Otherwise a key can be escaped with quotes, like: `"a very -strange kèy"` or `'even worse\', y u do this?'`. An example of a path with escaped key: `user."1 strange key"`. **NOTE: THIS IS A DRAFT**, escaped keys don't work yet
+Otherwise a key can be escaped with quotes, like: `"a very -strange kèy"` or `'even worse\', y u do this?'`. An example of a path with escaped key: `user."1 strange key"`. **NOTE: THIS IS A DRAFT**, escaped keys in paths don't work yet

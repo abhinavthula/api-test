@@ -195,6 +195,12 @@ describe('doc-syntax', function () {
 			price: 123
 		})
 	})
+
+	it('should work for escaped keys', function () {
+		check(['"1 vérÿ odd \" key": 17'], {
+			'1 vérÿ odd " key': 17
+		})
+	})
 })
 
 function check(lines, value) {
