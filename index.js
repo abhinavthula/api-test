@@ -18,6 +18,7 @@ var parse = require('./parse'),
  * @param {boolean} [options.recursive=false]
  * @param {boolean} [options.strict=true]
  * @param {Object} [options.context]
+ * @param {string[]} [options.ignoredFindKeys=['_id', '__v']]
  * @param {function(string):boolean} [options.filterFile]
  * @param {function(Array<Header|Obj>, Test)} [options.preParse]
  * @param {Function} [options.describe]
@@ -39,6 +40,7 @@ module.exports = function (folder, options) {
 		return true
 	}
 	options.preParse = options.preParse || function () {}
+	options.ignoredFindKeys = options.ignoredFindKeys || ['_id', '__v']
 
 	options.describe('api', function () {
 		options.before(function (done) {

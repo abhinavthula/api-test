@@ -33,8 +33,14 @@ function Case() {
 
 /**
  * Run the test case
- * @param {Object} options an object with keys db, it, url, context, strict
- * @param {string} testName
+ * @param {Object} options
+ * @param {Obejct} options.db
+ * @param {Function} options.it
+ * @param {string} options.baseUrl
+ * @param {Object} options.context
+ * @param {boolean} options.strict
+ * @param {string} options.testName
+ * @param {string[]} options.ignoredFindKeys
  */
 Case.prototype.execute = function (options, testName) {
 	var that = this,
@@ -80,7 +86,7 @@ Case.prototype.execute = function (options, testName) {
 				throw e
 			}
 			async.each(that.finds, function (find, done) {
-				find.execute(options.context, options.db, done)
+				find.execute(options, done)
 			}, done)
 		})
 	})

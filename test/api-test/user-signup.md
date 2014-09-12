@@ -35,9 +35,6 @@ The password must have at least 5 chars
 	token: String
 ### Find in users
 	user with token: out.token
-### Find in users
-	name: String
-	password: String
 
 ## Using the same username again
 ### Post

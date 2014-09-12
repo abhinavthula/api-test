@@ -22,4 +22,4 @@
 	error: null
 	token: String
 ### Find in users
-	token: out.token
+	user with token: out.token

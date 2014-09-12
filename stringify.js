@@ -85,6 +85,8 @@ module.exports = function (value, useColors) {
 			pushStr(value.toISOString(), false, false, colors.date)
 		} else if (value instanceof RegExp) {
 			pushStr(String(value), false, false, colors.regex)
+		} else if (typeof value === 'function') {
+			pushStr(value.name || String(value), false, false)
 		} else if (!Object.keys(value).length) {
 			pushStr('{}')
 		} else {

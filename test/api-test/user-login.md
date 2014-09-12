@@ -31,4 +31,4 @@ End of ignored section, but paragraphs are always ignored
 	error: null
 	token: String
 ### Find in users
-	token: out.token
+	user with token: out.token

@@ -27,7 +27,15 @@ function Test() {
 
 /**
  * Run the test
- * @param {Object} options an object with keys db, describe, before, it, baseUrl, context, strict
+ * @param {Object} options
+ * @param {Object} options.db
+ * @param {Function} options.describe
+ * @param {Function} options.before
+ * @param {Function} options.it
+ * @param {string} options.baseUrl
+ * @param {Object} options.context
+ * @param {boolean} options.strict
+ * @param {string[]} options.ignoredFindKeys
  */
 Test.prototype.execute = function (options) {
 	var that = this,
