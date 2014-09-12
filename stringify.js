@@ -51,7 +51,7 @@ module.exports = function (value, useColors) {
 		regex: '1'
 	}
 	var pushJsonValue = function (value, path) {
-		var key, needComma, subpath
+		var needComma, subpath
 		if (value === false) {
 			pushStr('false', false, false, colors.key)
 		} else if (value === true) {
@@ -69,12 +69,12 @@ module.exports = function (value, useColors) {
 		} else if (Array.isArray(value)) {
 			indentLevel++
 			pushStr('[', false, true)
-			for (key = 0; key < value.length; key++) {
-				if (key) {
+			value.forEach(function (value, i) {
+				if (i) {
 					pushStr(',', false, true)
 				}
-				pushJsonValue(value[key], path)
-			}
+				pushJsonValue(value, path)
+			})
 			indentLevel--
 			pushStr(']', true)
 		} else if (value instanceof ObjectID) {
@@ -93,7 +93,7 @@ module.exports = function (value, useColors) {
 			indentLevel++
 			pushStr('{', false, true)
 			needComma = false
-			for (key in value) {
+			Object.keys(value).sort().forEach(function (key) {
 				if (!needComma) {
 					needComma = true
 				} else {
@@ -103,7 +103,7 @@ module.exports = function (value, useColors) {
 				pushStr(escapeKey(key), false, false, colors.key)
 				pushStr(': ')
 				pushJsonValue(value[key], subpath)
-			}
+			})
 			indentLevel--
 			pushStr('}', true)
 		}

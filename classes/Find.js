@@ -48,7 +48,9 @@ Find.prototype.execute = function (options, done) {
 		if (!found) {
 			console.log('\n-----\n' +
 				'\x1b[1;32mDocuments in ' + that.collection + ':\x1b[0m\n' +
-				stringify(docs, true) + '\n' +
+				docs.map(function (doc) {
+					return stringify(doc, true)
+				}).join('\n---') + '\n' +
 				'\x1b[1;32mTarget document:\x1b[0m\n' +
 				stringify(target, true) + '\n' +
 				'-----\n')
