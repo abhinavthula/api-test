@@ -51,6 +51,10 @@ Obj.prototype.push = function (line) {
  */
 Obj.prototype.parse = function () {
 	if (!this.parsed) {
+		if (this.lines.length && this.lines[0][0] === '\t') {
+			throw new ParseError('Unexpected "\\t" at the line beginning', this)
+		}
+
 		if (!(this._parseArray() ||
 			this._parseObject() ||
 			this._parseMixin() ||
