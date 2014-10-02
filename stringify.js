@@ -6,15 +6,17 @@ var ObjectID = require('mongodb').ObjectID,
 /**
  * @param {*} value
  * @param {boolean} [useColors=false]
+ * @param {string} [highlightPath]
  * @returns {string}
  */
-module.exports = function (value, useColors) {
-	var finalStr = '',
-		indentLevel = 0
+module.exports = function (value, useColors, highlightPath) {
+	var finalStr = '\n',
+		indentLevel = 0,
+		highlight = false
 
 	var hasBreak = true
 	var getNL = function () {
-		var i, nl = '\n'
+		var i, nl = useColors && highlight ? '\x1b[0m\n\x1b[41m' : '\n'
 		for (i = 0; i < indentLevel; i++) {
 			nl += '  '
 		}
@@ -32,7 +34,7 @@ module.exports = function (value, useColors) {
 			finalStr += getNL()
 		}
 		if (color && useColors) {
-			finalStr += '\x1b[3' + color + 'm' + str + '\x1b[0m'
+			finalStr += '\x1b[3' + color + 'm' + str + '\x1b[37m'
 		} else {
 			finalStr += str
 		}
@@ -48,10 +50,16 @@ module.exports = function (value, useColors) {
 		id: '5;1',
 		bin: '6;1',
 		date: '6',
-		regex: '1'
+		regex: '1;1'
 	}
 	var pushJsonValue = function (value, path) {
 		var needComma, subpath
+
+		if (path === highlightPath) {
+			highlight = true
+			finalStr += '\x1b[41m'
+		}
+
 		if (value === false) {
 			pushStr('false', false, false, colors.key)
 		} else if (value === true) {
@@ -106,6 +114,11 @@ module.exports = function (value, useColors) {
 			})
 			indentLevel--
 			pushStr('}', true)
+		}
+
+		if (path === highlightPath) {
+			highlight = false
+			finalStr += '\x1b[0m'
 		}
 	}
 	pushJsonValue(value, '')

@@ -30,7 +30,7 @@ Find.prototype.execute = function (options, done) {
 		collection = options.db.collection(this.collection)
 
 	collection.find().toArray(function (err, docs) {
-		var found
+		var found, lastError
 
 		if (err) {
 			return done(err)
@@ -41,6 +41,7 @@ Find.prototype.execute = function (options, done) {
 				check(doc, target, options.strict, options.ignoredFindKeys)
 				return true
 			} catch (e) {
+				lastError = e.path
 				return false
 			}
 		})
@@ -49,10 +50,10 @@ Find.prototype.execute = function (options, done) {
 			console.log('\n-----\n' +
 				'\x1b[1;32mDocuments in ' + that.collection + ':\x1b[0m\n' +
 				docs.map(function (doc) {
-					return stringify(doc, true)
+					return stringify(doc, true, lastError)
 				}).join('\n---\n') + '\n' +
 				'\x1b[1;32mTarget document:\x1b[0m\n' +
-				stringify(target, true) + '\n' +
+				stringify(target, true, lastError) + '\n' +
 				'-----\n')
 			return done(new Error('No document found in ' + that.collection))
 		}

@@ -79,9 +79,9 @@ Case.prototype.execute = function (options, testName) {
 					'\x1b[1;32mInput:\x1b[0m\n' +
 					stringify(post, true) + '\n' +
 					'\x1b[1;32mOutput:\x1b[0m\n' +
-					stringify(out, true) + '\n' +
+					stringify(out, true, e.path) + '\n' +
 					'\x1b[1;32mExpected:\x1b[0m\n' +
-					stringify(expected, true) + '\n' +
+					stringify(expected, true, e.path) + '\n' +
 					'-----\n')
 				throw e
 			}
