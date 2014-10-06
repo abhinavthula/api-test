@@ -39,8 +39,11 @@ function Case() {
  * @param {string} options.baseUrl
  * @param {Object} options.context
  * @param {boolean} options.strict
- * @param {string} options.testName
  * @param {string[]} options.ignoredFindKeys
+ * @param {function(Case,*)} [options.onPost]
+ * @param {function(Case,*)} [options.onOut]
+ * @param {function(Case,Find)} [options.onFind]
+ * @param {string} testName
  */
 Case.prototype.execute = function (options, testName) {
 	var that = this,
@@ -57,6 +60,9 @@ Case.prototype.execute = function (options, testName) {
 
 		var post = that.post.execute(options.context, '<post>')
 		options.context.post = post
+		if (options.onPost) {
+			options.onPost(that, post)
+		}
 
 		request({
 			url: options.baseUrl + (that.postUrl || testName),
@@ -69,6 +75,10 @@ Case.prototype.execute = function (options, testName) {
 			}
 			options.context.out = out
 			expected = that.out.execute(options.context, '<out>')
+
+			if (options.onOut) {
+				options.onOut(that, out)
+			}
 
 			try {
 				res.statusCode.should.be.equal(that.statusCode)
@@ -86,6 +96,9 @@ Case.prototype.execute = function (options, testName) {
 				throw e
 			}
 			async.each(that.finds, function (find, done) {
+				if (options.onFind) {
+					options.onFind(that, find)
+				}
 				find.execute(options, done)
 			}, done)
 		})

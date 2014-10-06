@@ -21,6 +21,12 @@ var parse = require('./parse'),
  * @param {string[]} [options.ignoredFindKeys=['_id', '__v']]
  * @param {function(string):boolean} [options.filterFile]
  * @param {function(Array<Header|Obj>, Test)} [options.preParse]
+ * @param {function(Test)} [options.onTest]
+ * @param {function(Test,Insertion|Clear|Declaration)} [options.onSetup]
+ * @param {function(Test,Case)} [options.onCase]
+ * @param {function(Case,*)} [options.onPost]
+ * @param {function(Case,*)} [options.onOut]
+ * @param {function(Case,Find)} [options.onFind]
  * @param {Function} [options.describe]
  * @param {Function} [options.before]
  * @param {Function} [options.it]
@@ -57,7 +63,11 @@ module.exports = function (folder, options) {
 		// Load files
 		walk(options.recursive, folder, function (file) {
 			if (file.substr(-3) === '.md' && options.filterFile(file)) {
-				parse(fs.readFileSync(file, 'utf8'), options.preParse).execute(options)
+				var test = parse(fs.readFileSync(file, 'utf8'), options.preParse)
+				if (options.onTest) {
+					options.onTest(test)
+				}
+				test.execute(options)
 			}
 		})
 	})

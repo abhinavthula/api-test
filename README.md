@@ -151,6 +151,7 @@ Learn more about the syntax in the file [doc-syntax.md](https://github.com/clube
 * `ignoredFindKeys`: (optional) document keys to ignore in finds (default: `['_id', '__v']`)
 * `filterFile`: (optional) a function that will be called for every file and should return true if this file should be parsed
 * `preParse`: (optional) a function that will be called with all pre-parsed tokens (Header and Obj). This lets you do crazy stuff with the parsing if you want
+* for more low-level options, see `index.js`
 
 ## Type checking
 
