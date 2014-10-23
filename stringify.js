@@ -10,7 +10,7 @@ var ObjectID = require('mongodb').ObjectID,
  * @returns {string}
  */
 module.exports = function (value, useColors, highlightPath) {
-	var finalStr = '\n',
+	var finalStr = '',
 		indentLevel = 0,
 		highlight = false
 
@@ -78,10 +78,11 @@ module.exports = function (value, useColors, highlightPath) {
 			indentLevel++
 			pushStr('[', false, true)
 			value.forEach(function (value, i) {
+				var subpath = path ? path + '.' + i : String(i)
 				if (i) {
 					pushStr(',', false, true)
 				}
-				pushJsonValue(value, path)
+				pushJsonValue(value, subpath)
 			})
 			indentLevel--
 			pushStr(']', true)

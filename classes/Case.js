@@ -76,13 +76,12 @@ Case.prototype.execute = function (options, testName) {
 			options.context.out = out
 			expected = that.out.execute(options.context, '<out>')
 
-			if (options.onOut) {
-				options.onOut(that, out)
-			}
-
 			try {
 				res.statusCode.should.be.equal(that.statusCode)
 				check(out, expected, options.strict)
+				if (options.onOut) {
+					options.onOut(that, out)
+				}
 			} catch (e) {
 				console.log('\n-----\n' +
 					'Request details:\n' +
