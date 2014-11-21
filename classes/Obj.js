@@ -50,7 +50,17 @@ Obj.prototype.push = function (line) {
  * @returns {Obj} itself
  */
 Obj.prototype.parse = function () {
+	var i
+
 	if (!this.parsed) {
+		// Ignore empty lines at the end
+		for (i = this.lines.length - 1; i >= 0; i--) {
+			if (this.lines[i].trim()) {
+				break
+			}
+		}
+		this.lines = this.lines.slice(0, i + 1)
+
 		if (this.lines.length && this.lines[0][0] === '\t') {
 			throw new ParseError('Unexpected "\\t" at the line beginning', this)
 		}

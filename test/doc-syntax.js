@@ -201,6 +201,12 @@ describe('doc-syntax', function () {
 			'1 vérÿ odd " key': 17
 		})
 	})
+
+	it('should accept empty lines at the end', function () {
+		check(['a: 2', '\t', '', '\t\t'], {
+			a: 2
+		})
+	})
 })
 
 function check(lines, value) {
