@@ -26,11 +26,45 @@ function Find(collection, value) {
  */
 Find.prototype.execute = function (options, done) {
 	var target = this.value.execute(options.context, '<find in ' + this.collection + '>'),
-		that = this,
 		collection = options.db.collection(this.collection)
 
+	if ('_id' in target) {
+		this._executeWithId(target, collection, options, done)
+	} else {
+		this._executeWithoutId(target, collection, options, done)
+	}
+}
+
+Find.prototype._executeWithId = function (target, collection, options, done) {
+	var that = this
+	collection.findOne({
+		_id: target._id
+	}, function (err, doc) {
+		if (err) {
+			return done(err)
+		}
+
+		try {
+			check(doc, target, options.strict, options.ignoredFindKeys)
+		} catch (e) {
+			console.log('\n-----\n' +
+				'\x1b[1;32mDocument with id ' + target._id + ' in ' + that.collection + ':\x1b[0m\n' +
+				stringify(doc, true, e.path) + '\n' +
+				'\x1b[1;32mTarget document:\x1b[0m\n' +
+				stringify(target, true, e.path) + '\n' +
+				'-----\n')
+			return done(new Error('Document mismatch in ' + that.collection))
+		}
+
+		done()
+	})
+}
+
+Find.prototype._executeWithoutId = function (target, collection, options, done) {
+	var that = this
 	collection.find().toArray(function (err, docs) {
-		var found, lastError
+		var errorPaths = [],
+			found
 
 		if (err) {
 			return done(err)
@@ -41,7 +75,7 @@ Find.prototype.execute = function (options, done) {
 				check(doc, target, options.strict, options.ignoredFindKeys)
 				return true
 			} catch (e) {
-				lastError = e.path
+				errorPaths.push(e.path)
 				return false
 			}
 		})
@@ -49,11 +83,11 @@ Find.prototype.execute = function (options, done) {
 		if (!found) {
 			console.log('\n-----\n' +
 				'\x1b[1;32mDocuments in ' + that.collection + ':\x1b[0m\n' +
-				docs.map(function (doc) {
-					return stringify(doc, true, lastError)
+				docs.map(function (doc, i) {
+					return stringify(doc, true, errorPaths[i])
 				}).join('\n---\n') + '\n' +
 				'\x1b[1;32mTarget document:\x1b[0m\n' +
-				stringify(target, true, lastError) + '\n' +
+				stringify(target, true) + '\n' +
 				'-----\n')
 			return done(new Error('No document found in ' + that.collection))
 		}
