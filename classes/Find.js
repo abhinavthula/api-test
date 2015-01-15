@@ -1,7 +1,6 @@
 'use strict'
 
 var stringify = require('../stringify'),
-	ObjectID = require('mongodb').ObjectID,
 	check = require('../check')
 
 /**

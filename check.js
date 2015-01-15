@@ -8,7 +8,7 @@ var should = require('should'),
  * @param {*} actual
  * @param {*} expected
  * @param {boolean} strict
- * @param {string[]} [ignoredKeys=[]] only used if strict is true
+ * @param {string[]} [ignoredKeys=[]] only used if strict is true and only useful in the root level
  * @param {string} [path] used internally
  * @throws if invalid. The exception has a 'path' field with the path name that caused the error
  */
@@ -28,7 +28,7 @@ module.exports = function (actual, expected, strict, ignoredKeys, path) {
 				should(actual).have.property('length').above(expected.length - 1)
 			}
 			expected.forEach(function (each, i) {
-				module.exports(actual[i], each, strict, ignoredKeys, path ? path + '.' + i : i)
+				module.exports(actual[i], each, strict, [], path ? path + '.' + i : i)
 			})
 		} else if (expected &&
 			typeof expected === 'object' &&
@@ -36,9 +36,13 @@ module.exports = function (actual, expected, strict, ignoredKeys, path) {
 			// Hash map
 			should(actual).be.an.Object
 			for (key in expected) {
+				if (typeof expected[key] === 'function') {
+					// Skip functions, like toJSON
+					continue
+				}
 				should(actual).have.property(key)
 				subpath = path ? path + '.' + key : key
-				module.exports(actual[key], expected[key], strict, ignoredKeys, subpath)
+				module.exports(actual[key], expected[key], strict, [], subpath)
 			}
 			if (strict) {
 				ignoredKeys = ignoredKeys || []
