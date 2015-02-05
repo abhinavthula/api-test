@@ -36,7 +36,7 @@ module.exports = function (actual, expected, strict, ignoredKeys, path) {
 			// Hash map
 			should(actual).be.an.Object
 			for (key in expected) {
-				if (typeof expected[key] === 'function') {
+				if (typeof expected[key] === 'function' && types.indexOf(expected[key]) === -1) {
 					// Skip functions, like toJSON
 					continue
 				}
