@@ -5,7 +5,10 @@ var async = require('async')
 /**
  * @class
  */
-function Test() {
+function Test(path) {
+	/** @member {string} */
+	this.path = path
+
 	/** @member {string} */
 	this.name = ''
 

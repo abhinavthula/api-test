@@ -18,12 +18,13 @@ var Test = require('./classes/Test'),
 	ParseError = require('./classes/ParseError')
 
 /**
+ * @param {string} path
  * @param {string} text
  * @param {function(Array<Header|Obj>, Test)} preParse
  * @returns {Test}
  * @throws if the syntax is invalid
  */
-module.exports = function (text, preParse) {
+module.exports = function (path, text, preParse) {
 	var originalLines, i, line, els, lastObj, test
 
 	// First pass: break into lines
@@ -52,7 +53,7 @@ module.exports = function (text, preParse) {
 
 	// Third pass: extract main sections (header, setup, test cases)
 	// Also recursively parse their content
-	test = new Test
+	test = new Test(path)
 	try {
 		preParse(els, test)
 		i = parseHeader(test, els, 0)
@@ -60,6 +61,7 @@ module.exports = function (text, preParse) {
 		i = parseCases(test, els, i)
 	} catch (e) {
 		if (e instanceof ParseError) {
+			console.log('\n> In %s', path)
 			e.logSourceContext(originalLines)
 		}
 		throw e

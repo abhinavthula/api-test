@@ -25,7 +25,7 @@ require('util').inherits(ParseError, Error)
 ParseError.prototype.logSourceContext = function (originalLines) {
 	var start = Infinity,
 		end = -Infinity,
-		str = '\n\n-----',
+		str = '\n-----',
 		i, focus, checkElFocus, lineNum
 
 	if (!this.els.length) {

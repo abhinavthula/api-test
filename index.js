@@ -63,7 +63,7 @@ module.exports = function (folder, options) {
 		// Load files
 		walk(options.recursive, folder, function (file) {
 			if (file.substr(-3) === '.md' && options.filterFile(file)) {
-				var test = parse(fs.readFileSync(file, 'utf8'), options.preParse)
+				var test = parse(file, fs.readFileSync(file, 'utf8'), options.preParse)
 				if (options.onTest) {
 					options.onTest(test)
 				}
