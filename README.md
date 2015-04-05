@@ -60,7 +60,9 @@ The syntax is simply:
 
 At the first insertion in a collection, it will be cleared. This is important to make every test isolated. You may refer to this object by its _docName_.
 
-The syntax for _docDescription_ is described bellow
+The syntax for _docDescription_ is described bellow.
+
+Most of times, documents have a base strucuture with some default fields. You do not need to repeat yourself in this case, see the option `defaultDocuments` bellow.
 
 #### Clearing collections
 The syntax is simply:
@@ -144,6 +146,7 @@ Learn more about the syntax in the file [doc-syntax.md](https://github.com/clube
 ## Options
 * `mongoUri`: the mongo uri to connect to. The hostname SHOULD be 'localhost' and the db name SHOULD contains 'test'. If not, the code will ask for confirmation. This protects one from dropping production data, since the tests automatically clear collections, before inserting docs.
 * `baseUrl`: the base API url. Every request url will be composed from this base and the test name.
+* `defaultDocuments`: (optional) the default structure for documents in each collection. See [issue #1](https://github.com/clubedaentrega/api-test/issues/1) for details
 * `describe`, `it`, `before`: (optional) the mocha interface. Defaults to global mocha functions
 * `context`: (optional) define your own variables/functions accessible to object definitions
 * `recursive`: (optional) whether to look for *.md files inside subfolders (default: false)

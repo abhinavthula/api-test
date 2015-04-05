@@ -16,7 +16,11 @@ var User = mongoose.model('user', new mongoose.Schema({
 		}
 	},
 	password: String,
-	token: String
+	token: String,
+	isActive: {
+		type: Boolean,
+		default: true
+	}
 }))
 
 app.use(require('body-parser').json(), function (req, res, next) {

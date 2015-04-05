@@ -5,8 +5,9 @@ This test checks if a signuped user can login afterwards
 ### Clear users
 
 ### user is
-	name: 'Guilherme'
-	password: '12345'
+	defaultDocuments.users with
+		name: 'Guilherme'
+		password: '12345'
 
 ## Signup
 ### Post user/signup

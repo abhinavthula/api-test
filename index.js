@@ -30,9 +30,13 @@ var parse = require('./parse'),
  * @param {Function} [options.describe]
  * @param {Function} [options.before]
  * @param {Function} [options.it]
+ * @param {Object<String, Object>} [options.defaultDocuments]
  */
 module.exports = function (folder, options) {
 	options.mongoUri = validateMongoUri(options.mongoUri)
+
+	// Save defaultDocuments to baseContext to make it available for the script
+	baseContext.defaultDocuments = options.defaultDocuments || Object.create(null)
 
 	// Prepare options
 	options.describe = options.describe || describe

@@ -4,8 +4,9 @@
 ### Clear users
 
 ### user is
-	name: 'Guilherme'
-	password: '1234'
+	defaultDocuments.users with
+		name: 'Guilherme'
+		password: '1234'
 
 ## Invalid username
 ### Post
