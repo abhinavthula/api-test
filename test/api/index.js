@@ -82,6 +82,8 @@ app.post('/user/login', function (req, res) {
 		password: password
 	}, {
 		token: String(Math.random())
+	}, {
+		new: true
 	}, function (err, user) {
 		if (err) {
 			return res.error(err)
