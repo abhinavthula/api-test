@@ -32,11 +32,11 @@ Insertion.prototype.execute = function (db, context, done) {
 
 	// Prepare the document
 	value = this.value.execute(context, '<' + this.name + ' in ' + this.collection + '>')
+	context[that.name] = copyDeep(value)
 	if (context.defaultDocuments[this.collection]) {
-		setDefaults(value, context.defaultDocuments[this.collection])
+		setDefaults(context[that.name], context.defaultDocuments[this.collection])
 	}
 
-	context[that.name] = copyDeep(value)
 	db.collection(this.collection).insert(context[that.name], {
 		w: 1
 	}, done)
