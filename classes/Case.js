@@ -3,7 +3,10 @@
 var request = require('request'),
 	check = require('../check'),
 	async = require('async'),
-	stringify = require('../stringify')
+	stringify = require('../stringify'),
+	normalizePath = require('path').posix.normalize,
+	parse = require('url').parse,
+	format = require('url').format
 
 /**
  * @class
@@ -65,7 +68,7 @@ Case.prototype.execute = function (options, testName) {
 		}
 
 		request({
-			url: options.baseUrl + (that.postUrl || testName),
+			url: normalizeUrl(options.baseUrl + (that.postUrl || testName)),
 			method: 'POST',
 			json: post
 		}, function (err, res, out) {
@@ -105,3 +108,9 @@ Case.prototype.execute = function (options, testName) {
 }
 
 module.exports = Case
+
+function normalizeUrl(url) {
+	var parsed = parse(url)
+	parsed.pathname = normalizePath(parsed.pathname)
+	return format(parsed)
+}
