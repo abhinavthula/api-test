@@ -146,6 +146,7 @@ Learn more about the syntax in the file [doc-syntax.md](https://github.com/clube
 ## Options
 * `mongoUri`: the mongo uri to connect to. The hostname SHOULD be 'localhost' and the db name SHOULD contains 'test'. If not, the code will ask for confirmation. This protects one from dropping production data, since the tests automatically clear collections, before inserting docs.
 * `baseUrl`: the base API url. Every request url will be composed from this base and the test name.
+* `name`: (optional) the test name (given to root `describe(name, ...)` call)
 * `defaultDocuments`: (optional) the default structure for documents in each collection. See [issue #1](https://github.com/clubedaentrega/api-test/issues/1) for details
 * `describe`, `it`, `before`: (optional) the mocha interface. Defaults to global mocha functions
 * `context`: (optional) define your own variables/functions accessible to object definitions

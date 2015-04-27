@@ -15,6 +15,7 @@ var parse = require('./parse'),
  * @param {Object} options an object with optional keys:
  * @param {string} options.mongoUri
  * @param {string} options.baseUrl
+ * @param {string} [options.name='api']
  * @param {boolean} [options.recursive=false]
  * @param {boolean} [options.strict=true]
  * @param {Object} [options.context]
@@ -39,6 +40,7 @@ module.exports = function (folder, options) {
 	baseContext.defaultDocuments = options.defaultDocuments || Object.create(null)
 
 	// Prepare options
+	options.name = options.name || 'api'
 	options.describe = options.describe || describe
 	options.before = options.before || before
 	options.it = options.it || it
@@ -52,7 +54,7 @@ module.exports = function (folder, options) {
 	options.preParse = options.preParse || function () {}
 	options.ignoredFindKeys = options.ignoredFindKeys || ['_id', '__v']
 
-	options.describe('api', function () {
+	options.describe(options.name, function () {
 		options.before(function (done) {
 			// Connect to mongo
 			MongoClient.connect(options.mongoUri, function (err, db) {
