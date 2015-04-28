@@ -39,6 +39,7 @@ function Test(path) {
  * @param {Object} options.context
  * @param {boolean} options.strict
  * @param {string[]} options.ignoredFindKeys
+ * @param {Buffer} [options.ca]
  * @param {function(Test,Insertion|Clear|Declaration)} [options.onSetup]
  * @param {function(Test,Case)} [options.onCase]
  * @param {function(Case,*)} [options.onPost]

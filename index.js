@@ -20,6 +20,7 @@ var parse = require('./parse'),
  * @param {boolean} [options.strict=true]
  * @param {Object} [options.context]
  * @param {string[]} [options.ignoredFindKeys=['_id', '__v']]
+ * @param {Buffer} [options.ca]
  * @param {function(string):boolean} [options.filterFile]
  * @param {function(Array<Header|Obj>, Test)} [options.preParse]
  * @param {function(Test)} [options.onTest]

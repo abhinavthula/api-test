@@ -43,6 +43,7 @@ function Case() {
  * @param {Object} options.context
  * @param {boolean} options.strict
  * @param {string[]} options.ignoredFindKeys
+ * @param {Buffer} [options.ca]
  * @param {function(Case,*)} [options.onPost]
  * @param {function(Case,*)} [options.onOut]
  * @param {function(Case,Find)} [options.onFind]
@@ -70,7 +71,10 @@ Case.prototype.execute = function (options, testName) {
 		request({
 			url: normalizeUrl(options.baseUrl + (that.postUrl || testName)),
 			method: 'POST',
-			json: post
+			json: post,
+			agentOptions: {
+				ca: options.ca
+			}
 		}, function (err, res, out) {
 			var expected
 			if (err) {
