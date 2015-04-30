@@ -11,6 +11,7 @@ var _eval = require('../_eval'),
 function Obj(sourceLine) {
 	/** @param {string[]} */
 	this.lines = []
+
 	/**
 	 * @member {Object}
 	 * @property {number} begin
@@ -20,8 +21,10 @@ function Obj(sourceLine) {
 		begin: sourceLine,
 		end: sourceLine
 	}
+
 	/** @member {boolean} */
 	this.parsed = false
+
 	/** @member {Object|Array|string|Mixin} */
 	this.value = null
 }
@@ -66,9 +69,9 @@ Obj.prototype.parse = function () {
 		}
 
 		if (!(this._parseArray() ||
-			this._parseObject() ||
-			this._parseMixin() ||
-			this._parseJS())) {
+				this._parseObject() ||
+				this._parseMixin() ||
+				this._parseJS())) {
 			throw new ParseError('Invalid syntax', this)
 		}
 		this.parsed = true
@@ -94,9 +97,11 @@ Obj.prototype.execute = function (context, name) {
 	}
 
 	if (Array.isArray(this.value)) {
-		return this.value.map(function (each, i) {
+		r = this.value.map(function (each, i) {
 			return each.execute(context, name + '.' + i)
 		})
+		r.isOrdered = this.value.isOrdered
+		return r
 	} else if (typeof this.value === 'string') {
 		return _eval(this.value, context, name)
 	} else if (this.value instanceof Mixin) {
@@ -131,30 +136,38 @@ module.exports = Obj
 Obj.prototype._parseArray = function () {
 	var i, line, obj
 
-	if (!this.lines.length || this.lines[0][0] !== '*') {
-		// An array must start with a '*'
+	if (!this.lines.length || (this.lines[0][0] !== '*' && this.lines[0][0] !== '-')) {
+		// An array must start with a '*' or '-'
 		return false
 	}
 
 	// Split each array element
 	this.value = []
+	this.value.isOrdered = true
 	for (i = 0; i < this.lines.length; i++) {
 		line = this.lines[i]
-		if (line[0] === '*') {
+		if (line[0] === '*' || line[0] === '-') {
 			// A new element
 			if (line[1] !== '\t') {
-				throw new ParseError('Expected a "\\t" after "*"', this)
+				throw new ParseError('Expected a "\\t" after "' + line[0] + '"', this)
 			}
 			if (obj) {
 				this.value.push(obj.parse())
 			}
 			obj = new Obj(this.source.begin + i)
 			obj.push(line.substr(2))
+
+			// Get ordering
+			if (!i) {
+				this.value.isOrdered = line[0] === '*'
+			} else if (this.value.isOrdered !== (line[0] === '*')) {
+				throw new ParseError('Either all elements start with "*" or "-"', this)
+			}
 		} else if (line[0] === '\t') {
 			// Last obj continuation
 			obj.push(line.substr(1))
 		} else {
-			throw new ParseError('Expected either a "*" or "\\t"', this)
+			throw new ParseError('Expected either "*", "-" or "\\t"', this)
 		}
 	}
 	this.value.push(obj.parse())
@@ -195,7 +208,7 @@ Obj.prototype._parseObject = function (acceptPath) {
 		if ((match = line.match(regex))) {
 			// A new key
 			save(key, obj)
-			// 1 for path and simple key; 3 for escaped key
+				// 1 for path and simple key; 3 for escaped key
 			key = acceptPath ? match[1] : match[1] || match[3]
 			obj = new Obj(this.source.begin + i)
 			obj.push(line.substr(match[0].length).trim())

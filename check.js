@@ -27,9 +27,7 @@ module.exports = function (actual, expected, strict, ignoredKeys, path) {
 			} else {
 				should(actual).have.property('length').above(expected.length - 1)
 			}
-			expected.forEach(function (each, i) {
-				module.exports(actual[i], each, strict, [], path ? path + '.' + i : i)
-			})
+			checkArray(actual, expected, expected.isOrdered, strict, ignoredKeys, path)
 		} else if (expected &&
 			typeof expected === 'object' &&
 			(expected.constructor === Object || Object.getPrototypeOf(expected) === null)) {
@@ -62,4 +60,47 @@ module.exports = function (actual, expected, strict, ignoredKeys, path) {
 		}
 		throw e
 	}
+}
+
+/**
+ * @param {Array} actual
+ * @param {Array} expected
+ * @param {boolean} isOrdered
+ * @param {boolean} strict
+ * @param {Array<string>} ignoredKeys
+ * @param {string} path
+ * @throws if invalid. The exception has a 'path' field with the path name that caused the error
+ */
+function checkArray(actual, expected, isOrdered, strict, ignoredKeys, path) {
+	if (isOrdered) {
+		// Simple case: compare expected[i] with actual[i]
+		expected.forEach(function (each, i) {
+			module.exports(actual[i], each, strict, [], path ? path + '.' + i : i)
+		})
+		return
+	}
+
+	var visited = actual.map(function () {
+		return false
+	})
+	expected.forEach(function (eachExpected) {
+		var j
+		for (j = 0; j < actual.length; j++) {
+			if (visited[j]) {
+				continue
+			}
+
+			try {
+				module.exports(actual[j], eachExpected, strict, [], path ? path + '.' + j : j)
+				visited[j] = true
+				break
+			} catch (e) {
+				// Ignore these errors, we'll check next elements
+			}
+		}
+
+		if (j === actual.length) {
+			throw new Error('Unordered array mismatch')
+		}
+	})
 }

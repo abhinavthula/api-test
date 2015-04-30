@@ -92,14 +92,22 @@ describe('doc-syntax', function () {
 			'	*	"light"',
 			'	*	"pink"'
 		], {
-			tags: ['light', 'pink']
+			tags: array(['light', 'pink'], true)
 		})
 
 		check([
 			'*	3',
 			'*	14',
 			'*	15'
-		], [3, 14, 15])
+		], array([3, 14, 15], true))
+	})
+
+	it('should work for unordered arrays', function () {
+		check([
+			'-	92',
+			'-	65',
+			'-	35'
+		], array([92, 65, 35], false))
 	})
 
 	it('should work for more complex arrays', function () {
@@ -110,21 +118,21 @@ describe('doc-syntax', function () {
 			'	*	group: "work"',
 			'		num: 12'
 		], {
-			messages: [{
+			messages: array([{
 				group: 'family',
 				num: 2
 			}, {
 				group: 'work',
 				num: 12
-			}]
+			}], true)
 		})
 
 		check([
-			'*	*	1',
-			'	*	2',
+			'*	-	1',
+			'	-	2',
 			'*	*	3',
 			'	*	4'
-		], [[1, 2], [3, 4]])
+		], array([array([1, 2], false), array([3, 4], true)], true))
 	})
 
 	it('should work for simple mixins', function () {
@@ -223,4 +231,13 @@ function check(lines, value) {
 		throw e
 	}
 	should(obj.execute(context, '<>')).be.eql(value)
+}
+
+/**
+ * @param {Array} elements
+ * @param {boolean} isOrdered
+ */
+function array(elements, isOrdered) {
+	elements.isOrdered = isOrdered
+	return elements
 }
