@@ -52,9 +52,9 @@ Or an array as root:
 ## Unordered arrays
 Act the same as an array in most cases, except matching does not considered the order of the elements. That is:
 	set:
-		-	3
-		-	14
-		-	15
+		@	3
+		@	14
+		@	15
 matches `[15, 3, 14]`.
 
 ## Arrays of arrays

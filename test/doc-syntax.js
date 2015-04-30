@@ -104,9 +104,9 @@ describe('doc-syntax', function () {
 
 	it('should work for unordered arrays', function () {
 		check([
-			'-	92',
-			'-	65',
-			'-	35'
+			'@	92',
+			'@	65',
+			'@	35'
 		], array([92, 65, 35], false))
 	})
 
@@ -128,8 +128,8 @@ describe('doc-syntax', function () {
 		})
 
 		check([
-			'*	-	1',
-			'	-	2',
+			'*	@	1',
+			'	@	2',
 			'*	*	3',
 			'	*	4'
 		], array([array([1, 2], false), array([3, 4], true)], true))

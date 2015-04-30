@@ -136,8 +136,8 @@ module.exports = Obj
 Obj.prototype._parseArray = function () {
 	var i, line, obj
 
-	if (!this.lines.length || (this.lines[0][0] !== '*' && this.lines[0][0] !== '-')) {
-		// An array must start with a '*' or '-'
+	if (!this.lines.length || (this.lines[0][0] !== '*' && this.lines[0][0] !== '@')) {
+		// An array must start with a '*' or '@'
 		return false
 	}
 
@@ -146,7 +146,7 @@ Obj.prototype._parseArray = function () {
 	this.value.isOrdered = true
 	for (i = 0; i < this.lines.length; i++) {
 		line = this.lines[i]
-		if (line[0] === '*' || line[0] === '-') {
+		if (line[0] === '*' || line[0] === '@') {
 			// A new element
 			if (line[1] !== '\t') {
 				throw new ParseError('Expected a "\\t" after "' + line[0] + '"', this)
@@ -161,13 +161,13 @@ Obj.prototype._parseArray = function () {
 			if (!i) {
 				this.value.isOrdered = line[0] === '*'
 			} else if (this.value.isOrdered !== (line[0] === '*')) {
-				throw new ParseError('Either all elements start with "*" or "-"', this)
+				throw new ParseError('Either all elements start with "*" or "@"', this)
 			}
 		} else if (line[0] === '\t') {
 			// Last obj continuation
 			obj.push(line.substr(1))
 		} else {
-			throw new ParseError('Expected either "*", "-" or "\\t"', this)
+			throw new ParseError('Expected either "*", "@" or "\\t"', this)
 		}
 	}
 	this.value.push(obj.parse())
