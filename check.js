@@ -16,6 +16,14 @@ module.exports = function (actual, expected, strict, ignoredKeys, path) {
 	var key, subpath
 
 	try {
+		// Call toJSON() if present
+		if (actual !== null && actual !== undefined && typeof actual.toJSON === 'function') {
+			actual = actual.toJSON()
+		}
+		if (expected !== null && expected !== undefined && typeof expected.toJSON === 'function') {
+			expected = expected.toJSON()
+		}	
+		
 		if (types.indexOf(expected) !== -1) {
 			// Simple type check
 			should(actual).be.instanceof(expected)
