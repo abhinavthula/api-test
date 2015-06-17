@@ -85,7 +85,7 @@ Case.prototype.execute = function (options, testName) {
 
 			try {
 				res.statusCode.should.be.equal(that.statusCode)
-				check(out, expected, options.strict)
+				check(out, expected, options.strict, true)
 				if (options.onOut) {
 					options.onOut(that, out)
 				}

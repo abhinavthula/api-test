@@ -8,22 +8,29 @@ var should = require('should'),
  * @param {*} actual
  * @param {*} expected
  * @param {boolean} strict
+ * @param {boolean} forceJSON call toJSON if available
  * @param {string[]} [ignoredKeys=[]] only used if strict is true and only useful in the root level
  * @param {string} [path] used internally
  * @throws if invalid. The exception has a 'path' field with the path name that caused the error
  */
-module.exports = function (actual, expected, strict, ignoredKeys, path) {
+module.exports = function (actual, expected, strict, forceJSON, ignoredKeys, path) {
 	var key, subpath
 
 	try {
 		// Call toJSON() if present
-		if (actual !== null && actual !== undefined && typeof actual.toJSON === 'function') {
-			actual = actual.toJSON()
+		if (forceJSON) {
+			if (actual !== null &&
+				actual !== undefined &&
+				typeof actual.toJSON === 'function') {
+				actual = actual.toJSON()
+			}
+			if (expected !== null &&
+				expected !== undefined &&
+				typeof expected.toJSON === 'function') {
+				expected = expected.toJSON()
+			}
 		}
-		if (expected !== null && expected !== undefined && typeof expected.toJSON === 'function') {
-			expected = expected.toJSON()
-		}	
-		
+
 		if (types.indexOf(expected) !== -1) {
 			// Simple type check
 			should(actual).be.instanceof(expected)
@@ -35,7 +42,7 @@ module.exports = function (actual, expected, strict, ignoredKeys, path) {
 			} else {
 				should(actual).have.property('length').above(expected.length - 1)
 			}
-			checkArray(actual, expected, expected.isOrdered, strict, ignoredKeys, path)
+			checkArray(actual, expected, expected.isOrdered, strict, forceJSON, ignoredKeys, path)
 		} else if (expected &&
 			typeof expected === 'object' &&
 			(expected.constructor === Object || Object.getPrototypeOf(expected) === null)) {
@@ -48,7 +55,7 @@ module.exports = function (actual, expected, strict, ignoredKeys, path) {
 				}
 				should(actual).have.property(key)
 				subpath = path ? path + '.' + key : key
-				module.exports(actual[key], expected[key], strict, [], subpath)
+				module.exports(actual[key], expected[key], strict, forceJSON, [], subpath)
 			}
 			if (strict) {
 				ignoredKeys = ignoredKeys || []
@@ -75,15 +82,16 @@ module.exports = function (actual, expected, strict, ignoredKeys, path) {
  * @param {Array} expected
  * @param {boolean} isOrdered
  * @param {boolean} strict
+ * @param {boolean} forceJSON
  * @param {Array<string>} ignoredKeys
  * @param {string} path
  * @throws if invalid. The exception has a 'path' field with the path name that caused the error
  */
-function checkArray(actual, expected, isOrdered, strict, ignoredKeys, path) {
+function checkArray(actual, expected, isOrdered, strict, forceJSON, ignoredKeys, path) {
 	if (isOrdered) {
 		// Simple case: compare expected[i] with actual[i]
 		expected.forEach(function (each, i) {
-			module.exports(actual[i], each, strict, [], path ? path + '.' + i : i)
+			module.exports(actual[i], each, strict, forceJSON, [], path ? path + '.' + i : i)
 		})
 		return
 	}
@@ -99,7 +107,7 @@ function checkArray(actual, expected, isOrdered, strict, ignoredKeys, path) {
 			}
 
 			try {
-				module.exports(actual[j], eachExpected, strict, [], path ? path + '.' + j : j)
+				module.exports(actual[j], eachExpected, strict, forceJSON, [], path ? path + '.' + j : j)
 				visited[j] = true
 				break
 			} catch (e) {

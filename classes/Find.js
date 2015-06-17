@@ -11,7 +11,7 @@ var stringify = require('../stringify'),
 function Find(collection, value) {
 	/** @member {string} */
 	this.collection = collection
-	/** @member {Obj} */
+		/** @member {Obj} */
 	this.value = value
 }
 
@@ -44,7 +44,7 @@ Find.prototype._executeWithId = function (target, collection, options, done) {
 		}
 
 		try {
-			check(doc, target, options.strict, options.ignoredFindKeys)
+			check(doc, target, options.strict, false, options.ignoredFindKeys)
 		} catch (e) {
 			console.log('\n-----\n' +
 				'\x1b[1;32mDocument with id ' + target._id + ' in ' + that.collection + ':\x1b[0m\n' +
@@ -71,7 +71,7 @@ Find.prototype._executeWithoutId = function (target, collection, options, done) 
 
 		found = docs.some(function (doc) {
 			try {
-				check(doc, target, options.strict, options.ignoredFindKeys)
+				check(doc, target, options.strict, false, options.ignoredFindKeys)
 				return true
 			} catch (e) {
 				errorPaths.push(e.path)
