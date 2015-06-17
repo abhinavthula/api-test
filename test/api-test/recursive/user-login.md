@@ -20,6 +20,7 @@
 	user: user
 ### Out
 	error: null
+	id: user._id
 	token: String
 ### Find in users
 	user with token: out.token

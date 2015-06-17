@@ -95,6 +95,7 @@ app.post('/user/login', function (req, res) {
 			return res.error(200, 'Invalid name or password')
 		}
 		res.success({
+			id: user._id,
 			token: user.token
 		})
 	})

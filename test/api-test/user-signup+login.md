@@ -21,6 +21,7 @@ This test checks if a signuped user can login afterwards
 	user: user
 ### Out
 	error: null
+	id: String
 	token: String
 ### Find in users
 	user with token: out.token

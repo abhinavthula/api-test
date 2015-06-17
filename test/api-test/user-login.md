@@ -29,6 +29,7 @@ End of ignored section, but paragraphs are always ignored
 	user: user
 ### Out
 	error: null
+	id: user._id
 	token: String
 ### Find in users
 	user with token: out.token
