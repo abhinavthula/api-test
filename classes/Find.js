@@ -52,7 +52,7 @@ Find.prototype._executeWithId = function (target, collection, options, done) {
 				'\x1b[1;32mTarget document:\x1b[0m\n' +
 				stringify(target, true, e.path) + '\n' +
 				'-----\n')
-			return done(new Error('Document mismatch in ' + that.collection))
+			return done(new Error('Document mismatch in ' + that.collection + '\n' + e.message))
 		}
 
 		done()
