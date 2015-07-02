@@ -5,7 +5,7 @@ var test = require('../')
 
 before(function () {
 	// Start the API
-	this.timeout(5e3)
+	this.timeout(10e3)
 	require('./api')
 })
 
