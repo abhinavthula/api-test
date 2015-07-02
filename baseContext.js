@@ -20,13 +20,13 @@ module.exports.ObjectId = module.exports.ObjectID = ObjectID
 
 /**
  * Generate a random string with base64 chars (A-Za-z0-9+/)
- * @param {number} [len=7]
+ * @param {number} [len=8]
  * @param {string} [alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/']
  * @returns {string}
  */
 module.exports.randomStr = function (len, alphabet) {
 	var i, str = ''
-	len = len || 7
+	len = len || 8
 	alphabet = alphabet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 	for (i = 0; i < len; i++) {
 		str += alphabet[Math.floor(Math.random() * alphabet.length)]
@@ -36,7 +36,7 @@ module.exports.randomStr = function (len, alphabet) {
 
 /**
  * Generate a random string with hex chars (0-9a-f)
- * @param {number} [len=7]
+ * @param {number} [len=8]
  * @returns {string}
  */
 module.exports.randomHex = function (len) {
@@ -45,7 +45,7 @@ module.exports.randomHex = function (len) {
 
 /**
  * Generate a random string with digits (0-9)
- * @param {number} [len=7]
+ * @param {number} [len=8]
  * @returns {string}
  */
 module.exports.randomCode = function (len) {
