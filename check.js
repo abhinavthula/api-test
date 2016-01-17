@@ -36,7 +36,7 @@ module.exports = function (actual, expected, strict, forceJSON, ignoredKeys, pat
 			should(actual).be.instanceof(expected)
 		} else if (Array.isArray(expected)) {
 			// Check every array element
-			should(actual).be.an.Array
+			should(actual).be.an.Array()
 			if (strict) {
 				should(actual).have.length(expected.length)
 			} else {
@@ -47,7 +47,7 @@ module.exports = function (actual, expected, strict, forceJSON, ignoredKeys, pat
 			typeof expected === 'object' &&
 			(expected.constructor === Object || Object.getPrototypeOf(expected) === null)) {
 			// Hash map
-			should(actual).be.an.Object
+			should(actual).be.an.Object()
 			for (key in expected) {
 				if (typeof expected[key] === 'function' && types.indexOf(expected[key]) === -1) {
 					// Skip functions, like toJSON
