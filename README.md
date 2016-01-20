@@ -1,4 +1,7 @@
 # API Test
+[![Build Status](https://travis-ci.org/clubedaentrega/api-test.svg?branch=master)](https://travis-ci.org/clubedaentrega/api-test)
+[![Inline docs](http://inch-ci.org/github/clubedaentrega/api-test.svg?branch=master)](http://inch-ci.org/github/clubedaentrega/api-test)
+[![Dependency Status](https://david-dm.org/clubedaentrega/api-test.svg)](https://david-dm.org/clubedaentrega/api-test)
 
 API testing made simple
 
