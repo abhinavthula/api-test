@@ -1,7 +1,7 @@
 /*globals describe, before, it*/
 'use strict'
 
-var parse = require('./parse'),
+var parseFile = require('./parseFile'),
 	fs = require('fs'),
 	path = require('path'),
 	MongoClient = require('mongodb').MongoClient,
@@ -22,7 +22,6 @@ var parse = require('./parse'),
  * @param {string[]} [options.ignoredFindKeys=['_id', '__v']]
  * @param {Buffer} [options.ca]
  * @param {function(string):boolean} [options.filterFile]
- * @param {function(Array<Header|Obj>, Test)} [options.preParse]
  * @param {function(Test)} [options.onTest]
  * @param {function(Test,Insertion|Clear|Declaration)} [options.onSetup]
  * @param {function(Test,Case)} [options.onCase]
@@ -52,7 +51,6 @@ module.exports = function (folder, options) {
 	options.filterFile = options.filterFile || function () {
 		return true
 	}
-	options.preParse = options.preParse || function () {}
 	options.ignoredFindKeys = options.ignoredFindKeys || ['_id', '__v']
 
 	options.describe(options.name, function () {
@@ -70,7 +68,7 @@ module.exports = function (folder, options) {
 		// Load files
 		walk(options.recursive, folder, function (file) {
 			if (file.substr(-3) === '.md' && options.filterFile(file)) {
-				var test = parse(file, fs.readFileSync(file, 'utf8'), options.preParse)
+				var test = parseFile(file)
 				if (options.onTest) {
 					options.onTest(test)
 				}
@@ -79,21 +77,6 @@ module.exports = function (folder, options) {
 		})
 	})
 }
-
-/**
- * @class
- */
-module.exports.Header = require('./classes/Header')
-
-/**
- * @class
- */
-module.exports.Obj = require('./classes/Obj')
-
-/**
- * @class
- */
-module.exports.ParseError = require('./classes/ParseError')
 
 /**
  * Make sure the mongo uri has 'localhost' as hostname and 'test' in the DB name

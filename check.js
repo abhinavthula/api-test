@@ -42,7 +42,7 @@ module.exports = function (actual, expected, strict, forceJSON, ignoredKeys, pat
 			} else {
 				should(actual).have.property('length').above(expected.length - 1)
 			}
-			checkArray(actual, expected, expected.isOrdered, strict, forceJSON, ignoredKeys, path)
+			checkArray(actual, expected, expected.isUnordered, strict, forceJSON, ignoredKeys, path)
 		} else if (expected &&
 			typeof expected === 'object' &&
 			(expected.constructor === Object || Object.getPrototypeOf(expected) === null)) {
@@ -80,15 +80,15 @@ module.exports = function (actual, expected, strict, forceJSON, ignoredKeys, pat
 /**
  * @param {Array} actual
  * @param {Array} expected
- * @param {boolean} isOrdered
+ * @param {boolean} isUnordered
  * @param {boolean} strict
  * @param {boolean} forceJSON
  * @param {Array<string>} ignoredKeys
  * @param {string} path
  * @throws if invalid. The exception has a 'path' field with the path name that caused the error
  */
-function checkArray(actual, expected, isOrdered, strict, forceJSON, ignoredKeys, path) {
-	if (isOrdered) {
+function checkArray(actual, expected, isUnordered, strict, forceJSON, ignoredKeys, path) {
+	if (!isUnordered) {
 		// Simple case: compare expected[i] with actual[i]
 		expected.forEach(function (each, i) {
 			module.exports(actual[i], each, strict, forceJSON, [], path ? path + '.' + i : i)

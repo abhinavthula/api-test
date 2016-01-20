@@ -1,6 +1,6 @@
 {
 	"name": "api-test",
-	"version": "3.2.0",
+	"version": "4.0.0",
 	"author": "Sitegui <sitegui@sitegui.com.br>",
 	"description": "API testing made simple",
 	"main": "./index.js",
@@ -15,6 +15,7 @@
 		"markdown"
 	],
 	"dependencies": {
+		"@clubedaentrega/test-spec": "~1.0.1",
 		"async": "^1.5.2",
 		"mocha": "^2.3.4",
 		"mongodb": "^2.1.4",
@@ -23,7 +24,7 @@
 	},
 	"license": "MIT",
 	"engines": {
-		"node": ">=0.10"
+		"node": ">=4.2"
 	},
 	"scripts": {
 		"test": "mocha test -b"

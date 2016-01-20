@@ -4,7 +4,8 @@
 ### base is
 	a: 'Hello'
 ### user in User
-	base // this should not alter base
+	// this should not alter base
+	base
 ### user2 in User
 	base
 
@@ -15,6 +16,8 @@
 	error: null
 	a: 'Hello'
 ### Find in User
-	user // Find by id
+	// Find by id
+	user
 ### Find in User
-	base // Find any that match everything
+	// Find any that match everything
+	base

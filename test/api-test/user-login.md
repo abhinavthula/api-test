@@ -3,7 +3,7 @@
 This section will be ignored
 
 ## Input
-	this is a fake object, won't be parsed as one
+	empty
 
 ## Setup
 End of ignored section, but paragraphs are always ignored

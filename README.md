@@ -97,7 +97,7 @@ By appending ` (skip)` to a test case name (see an [example](https://github.com/
 
 You can also append ` (skip)` to a test file header (see an [example](https://github.com/clubedaentrega/api-test/blob/master/test/api-test/recursive/skip.md)) to skip the whole file.
 
-## Object syntax
+## Value syntax
 The syntax was designed to be concise and expressive. The values will be eval'ed as normal JS with a context with special variables (see `default context` bellow).
 
 The object can be a simple JS value, like:
@@ -120,28 +120,18 @@ Or mixins, like:
 user with name.first: 'Unhappy'
 ```
 
-Learn more about the syntax in the file [doc-syntax.md](https://github.com/clubedaentrega/api-test/blob/master/doc-syntax.md)
+Learn more about the syntax in the file [value-syntax.md](https://github.com/clubedaentrega/test-spec/blob/master/value-syntax.md)
 
 ## Default context
 
 * `ObjectId()`: the mongo object id constructor
 * `randomId()`: return a random mongo-id as a 24-hex-char string
-* `randomStr([len=7], [alphabet=a-zA-Z0-9+/])`
-* `randomHex([len=7])`
-* `randomCode([len=7])`
-* `randomEmail([domain='example.com'])`
-* `randomUrl([base='http://example.com'])`
-* `random([min=0],[max=1])`
-* `randomInt([min=0],[max=100])`
-* `randomBool()`
-* `randomDate([interval=1day], [base=now])`
-* `randomOf(...values)`: return one of its arguments
-* `empty`: the empty object `{}`
 * `post`: the request body of the current test case
 * `out`: the response body of the current test case
 * `prev`: an object wity keys:
 	* `post`: the request body of the previous request
 	* `out`: the response body of the previous request
+* [Other random utilities](https://github.com/clubedaentrega/test-spec#default-context)
 
 ## Options
 * `mongoUri`: the mongo uri to connect to. The hostname SHOULD be 'localhost' and the db name SHOULD contains 'test'. If not, the code will ask for confirmation. This protects one from dropping production data, since the tests automatically clear collections, before inserting docs.
@@ -155,7 +145,6 @@ Learn more about the syntax in the file [doc-syntax.md](https://github.com/clube
 * `ca`: (optional) CA certificate (useful when using a self-signed certificate in the server)
 * `ignoredFindKeys`: (optional) document keys to ignore in finds (default: `['_id', '__v']`)
 * `filterFile`: (optional) a function that will be called for every file and should return true if this file should be parsed
-* `preParse`: (optional) a function that will be called with all pre-parsed tokens (Header and Obj). This lets you do crazy stuff with the parsing if you want
 * for more low-level options, see `index.js`
 
 ## Type checking
