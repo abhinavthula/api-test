@@ -67,7 +67,7 @@ module.exports = function (actual, expected, strict, forceJSON, ignoredKeys, pat
 			}
 		} else {
 			// Simple value check
-			should(actual).be.eql(expected)
+			should(actual).match(expected)
 		}
 	} catch (e) {
 		if (!e.path) {
