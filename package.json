@@ -1,6 +1,6 @@
 {
 	"name": "api-test",
-	"version": "4.0.1",
+	"version": "4.1.0",
 	"author": "Sitegui <sitegui@sitegui.com.br>",
 	"description": "API testing made simple",
 	"main": "./index.js",
@@ -15,12 +15,12 @@
 		"markdown"
 	],
 	"dependencies": {
-		"@clubedaentrega/test-spec": "~1.5.0",
-		"async": "^2.0.0",
-		"mocha": "^2.5.3",
-		"mongodb": "^2.2.4",
-		"request": "^2.73.0",
-		"should": "^10.0.0"
+		"@clubedaentrega/test-spec": "~1.5.1",
+		"async": "^2.4.0",
+		"mocha": "^3.3.0",
+		"mongodb": "^2.2.26",
+		"request": "^2.81.0",
+		"should": "^11.2.1"
 	},
 	"license": "MIT",
 	"engines": {
@@ -30,8 +30,8 @@
 		"test": "mocha test -b"
 	},
 	"devDependencies": {
-		"body-parser": "^1.15.2",
-		"express": "^4.14.0",
-		"mongoose": "^4.5.5"
+		"body-parser": "^1.17.1",
+		"express": "^4.15.2",
+		"mongoose": "^4.9.7"
 	}
 }

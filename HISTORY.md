@@ -1,3 +1,6 @@
+# 4.1.0
+* Changed: updated dependencies
+
 # 4.0.1
 * Changed: updated dependencies
 * Fixed: use match() instead of eql()
